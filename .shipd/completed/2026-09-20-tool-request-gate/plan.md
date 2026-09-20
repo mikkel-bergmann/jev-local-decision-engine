@@ -1,5 +1,5 @@
 # tool-request-gate
-Status: complete
+Status: verified
 
 ## Idea
 

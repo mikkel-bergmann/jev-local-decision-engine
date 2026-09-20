@@ -13,6 +13,8 @@ GATE_NEGATIVES_PATHS = [
 
 GATE_HOLDOUT_PATH = os.path.join("data", "gate_holdout.json")
 
+GATE_ADVERSARIAL_PATH = os.path.join("data", "gate_adversarial.json")
+
 GATE_HEAD_PATH = os.path.join("data", "gate_head.pt")
 
 SAMPLE_TOOL_REQUEST = "Please refund this customer's most recent payment."
@@ -207,3 +209,52 @@ def test_route_tool_on_accepted_query_matches_tool_head_alone():
     assert result["tool"] == tool_only["decision"]
     assert result["top_k"] == tool_only["top_k"]
     assert "gate_probability" in result
+
+
+def load_gate_adversarial_items():
+    with open(GATE_ADVERSARIAL_PATH) as f:
+        return json.load(f)
+
+
+@pytest.mark.requires_model
+def test_shipped_gate_meets_the_measured_adversarial_bar():
+    # Guards the measured bar recorded in decision_heads.GATE_THRESHOLD's
+    # comment (43/45 adversarial negatives rejected, 24/25 genuine
+    # incident-logging requests retained at threshold 0.55) so a future
+    # retrain that regresses it fails the suite instead of passing
+    # unnoticed — the scenario was previously enforced only by prose and
+    # manual reporting. Loads the shipped data/gate_head.pt at the shipped
+    # GATE_THRESHOLD and scores data/gate_adversarial.json directly; skips
+    # cleanly (via load_trained_gate_heads) when the checkpoint is absent.
+    from decision_heads import GATE_THRESHOLD, run_heads_decision
+
+    gate = load_trained_gate_heads()
+    adversarial = load_gate_adversarial_items()
+
+    neg_total = neg_rejected = 0
+    pos_total = pos_retained = 0
+    for item in adversarial:
+        result = run_heads_decision(item["text"], gate)
+        probability = result["decisions"]["is_tool_request"]["probabilities"]["yes"]
+        accepted = probability >= GATE_THRESHOLD
+
+        if item["is_tool_request"]:
+            pos_total += 1
+            if accepted:
+                pos_retained += 1
+        else:
+            neg_total += 1
+            if not accepted:
+                neg_rejected += 1
+
+    negative_rejection_rate = neg_rejected / neg_total
+    genuine_retention_rate = pos_retained / pos_total
+
+    assert negative_rejection_rate >= 0.90, (
+        f"adversarial negative-rejection rate fell to {neg_rejected}/{neg_total} "
+        f"({negative_rejection_rate:.4f}), below the required 0.90"
+    )
+    assert genuine_retention_rate >= 0.90, (
+        f"adversarial genuine-retention rate fell to {pos_retained}/{pos_total} "
+        f"({genuine_retention_rate:.4f}), below the required 0.90"
+    )

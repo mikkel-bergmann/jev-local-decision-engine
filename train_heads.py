@@ -72,6 +72,13 @@ GATE_HEAD_PATH = os.path.join("data", "gate_head.pt")
 
 GATE_HOLDOUT_PATH = os.path.join("data", "gate_holdout.json")
 
+# Evaluation-only: narrative past-tense negatives of the class the gate
+# kept failing, plus genuine incident-logging requests that must still be
+# accepted. Never appears in any TRAIN_PATHS list and is never read by
+# load_gate_training_data — training on it would make the sweep stop
+# measuring anything, per `gate-evaluation`.
+GATE_ADVERSARIAL_PATH = os.path.join("data", "gate_adversarial.json")
+
 CATEGORY_TOPICS = {
     "billing": ["my invoice", "the subscription charge", "my monthly bill"],
     "technical_support": ["the app", "the login page", "the dashboard"],
@@ -494,34 +501,98 @@ def evaluate_tool_head(heads, holdout_path=TOOL_HOLDOUT_PATH):
 GATE_THRESHOLD_CANDIDATES = [round(0.10 + 0.05 * i, 2) for i in range(17)]
 
 
-def choose_gate_threshold(gate, holdout_path=GATE_HOLDOUT_PATH):
-    """Sweep candidate gate decision thresholds against `holdout_path` and
-    select the one that maximizes the harmonic mean of the two directions
-    of the trade a threshold makes: the share of negatives rejected and the
-    share of genuine tool requests retained.
+def _binary_rates(items, probabilities, threshold):
+    """Score one candidate threshold against parallel `items` /
+    `probabilities` lists (each item an `{"is_tool_request": bool, ...}`
+    dict) and return the standard confusion-matrix rates.
+    """
+    tp = fp = tn = fn = 0
+    for item, probability in zip(items, probabilities):
+        accepted = probability >= threshold
+        is_positive = item["is_tool_request"]
+        if is_positive and accepted:
+            tp += 1
+        elif is_positive and not accepted:
+            fn += 1
+        elif not is_positive and accepted:
+            fp += 1
+        else:
+            tn += 1
+
+    negative_rejection_rate = tn / (tn + fp) if (tn + fp) else 0.0
+    genuine_retention_rate = tp / (tp + fn) if (tp + fn) else 0.0
+    precision = tp / (tp + fp) if (tp + fp) else 0.0
+    recall = genuine_retention_rate
+    f1 = (
+        2 * precision * recall / (precision + recall) if (precision + recall) else 0.0
+    )
+    harmonic_mean = (
+        2
+        * negative_rejection_rate
+        * genuine_retention_rate
+        / (negative_rejection_rate + genuine_retention_rate)
+        if (negative_rejection_rate + genuine_retention_rate)
+        else 0.0
+    )
+
+    return {
+        "negative_rejection_rate": negative_rejection_rate,
+        "genuine_retention_rate": genuine_retention_rate,
+        "precision": precision,
+        "recall": recall,
+        "f1": f1,
+        "harmonic_mean": harmonic_mean,
+    }
+
+
+def choose_gate_threshold(
+    gate, holdout_path=GATE_HOLDOUT_PATH, adversarial_path=GATE_ADVERSARIAL_PATH
+):
+    """Sweep candidate gate decision thresholds against `holdout_path` AND
+    `adversarial_path`, and select the one that maximizes the holdout's
+    harmonic mean of the two directions of the trade a threshold makes —
+    the share of negatives rejected and the share of genuine tool requests
+    retained — breaking any tie on the adversarial negative-rejection rate
+    rather than by taking the lowest tying threshold.
+
+    The holdout alone under-determines the choice: it ties at harmonic
+    mean 1.0 across a 0.20-wide band (0.35 to 0.55), so a rule that broke
+    ties by taking the lowest value was choosing arbitrarily inside a range
+    the holdout cannot discriminate at all — and happened to land on the
+    threshold that re-admitted a whole class of narrative-incident
+    negatives the retraining had otherwise pushed down (see
+    `data/gate_adversarial.json` and this task's history). Adversarial
+    rejection breaks that tie in the direction the holdout is blind to,
+    without ever letting the adversarial set influence which candidate
+    would count as strong on the holdout in the first place — the primary
+    ranking is holdout harmonic mean alone, exactly as `gate-threshold`
+    requires; the adversarial set only resolves ties that would otherwise
+    be arbitrary.
 
     A hand-picked threshold is exactly what this function replaces — see
     `gate-threshold` and the decision recorded in this change's plan: a
     threshold chosen by judgement alone is how the previous advice (a
     confidence cutoff on the tool head's own softmax) was refuted by
-    measurement. This sweep is the measurement.
+    measurement, and how the very first sweep's tie-break (lowest value)
+    quietly reintroduced the same kind of unmeasured choice. This sweep is
+    the measurement, all the way down to the tie-break.
 
-    Scores every holdout item once with `gate` (its "yes" probability),
-    then, for each candidate threshold in `GATE_THRESHOLD_CANDIDATES`
-    (0.10 to 0.90 in steps of 0.05), classifies an item accepted iff its
-    "yes" probability is at or above that threshold. For each candidate,
-    reports:
+    Scores every holdout item and every adversarial item once each with
+    `gate` (its "yes" probability), then, for each candidate threshold in
+    `GATE_THRESHOLD_CANDIDATES` (0.10 to 0.90 in steps of 0.05), classifies
+    an item accepted iff its "yes" probability is at or above that
+    threshold. For each candidate, reports the holdout's
+    `negative_rejection_rate`, `genuine_retention_rate`, `precision`,
+    `recall`, `f1` and `harmonic_mean` (as before), plus
+    `adversarial_negative_rejection_rate` and
+    `adversarial_genuine_retention_rate` computed the same way over
+    `adversarial_path`.
 
-    - `negative_rejection_rate`: the share of true negatives correctly
-      rejected
-    - `genuine_retention_rate`: the share of true positives (genuine tool
-      requests) correctly retained — the same figure as `recall`, reported
-      under both names since `gate-threshold` and `gate-evaluation` each
-      name it differently
-    - `precision`, `recall`, `f1`: the standard classification figures at
-      that threshold
-    - `harmonic_mean`: the harmonic mean of `negative_rejection_rate` and
-      `genuine_retention_rate` — the selection criterion
+    Selection: among all candidates, keep only those whose holdout
+    `harmonic_mean` equals the maximum achieved by any candidate; among
+    those, pick the one with the highest
+    `adversarial_negative_rejection_rate`; any tie remaining after that is
+    broken by the lowest threshold, for full determinism.
 
     Returns `{"threshold": selected_value, "selected": {...the winning
     candidate's full record...}, "sweep": [...one record per candidate,
@@ -529,61 +600,51 @@ def choose_gate_threshold(gate, holdout_path=GATE_HOLDOUT_PATH):
     """
     with open(holdout_path) as f:
         holdout = json.load(f)
+    with open(adversarial_path) as f:
+        adversarial = json.load(f)
 
-    probabilities = []
+    holdout_probabilities = []
     for item in holdout:
         result = run_heads_decision(item["text"], gate)
-        probabilities.append(
+        holdout_probabilities.append(
+            result["decisions"]["is_tool_request"]["probabilities"]["yes"]
+        )
+
+    adversarial_probabilities = []
+    for item in adversarial:
+        result = run_heads_decision(item["text"], gate)
+        adversarial_probabilities.append(
             result["decisions"]["is_tool_request"]["probabilities"]["yes"]
         )
 
     sweep = []
-    best = None
     for threshold in GATE_THRESHOLD_CANDIDATES:
-        tp = fp = tn = fn = 0
-        for item, probability in zip(holdout, probabilities):
-            accepted = probability >= threshold
-            is_positive = item["is_tool_request"]
-            if is_positive and accepted:
-                tp += 1
-            elif is_positive and not accepted:
-                fn += 1
-            elif not is_positive and accepted:
-                fp += 1
-            else:
-                tn += 1
-
-        negative_rejection_rate = tn / (tn + fp) if (tn + fp) else 0.0
-        genuine_retention_rate = tp / (tp + fn) if (tp + fn) else 0.0
-        precision = tp / (tp + fp) if (tp + fp) else 0.0
-        recall = genuine_retention_rate
-        f1 = (
-            2 * precision * recall / (precision + recall)
-            if (precision + recall)
-            else 0.0
-        )
-        harmonic_mean = (
-            2
-            * negative_rejection_rate
-            * genuine_retention_rate
-            / (negative_rejection_rate + genuine_retention_rate)
-            if (negative_rejection_rate + genuine_retention_rate)
-            else 0.0
+        holdout_rates = _binary_rates(holdout, holdout_probabilities, threshold)
+        adversarial_rates = _binary_rates(
+            adversarial, adversarial_probabilities, threshold
         )
 
-        sweep.append(
-            {
-                "threshold": threshold,
-                "negative_rejection_rate": negative_rejection_rate,
-                "genuine_retention_rate": genuine_retention_rate,
-                "precision": precision,
-                "recall": recall,
-                "f1": f1,
-                "harmonic_mean": harmonic_mean,
-            }
-        )
-        if best is None or sweep[-1]["harmonic_mean"] > best["harmonic_mean"]:
-            best = sweep[-1]
+        record = dict(holdout_rates)
+        record["threshold"] = threshold
+        record["adversarial_negative_rejection_rate"] = adversarial_rates[
+            "negative_rejection_rate"
+        ]
+        record["adversarial_genuine_retention_rate"] = adversarial_rates[
+            "genuine_retention_rate"
+        ]
+        sweep.append(record)
+
+    max_harmonic_mean = max(record["harmonic_mean"] for record in sweep)
+    tied = [
+        record for record in sweep if record["harmonic_mean"] == max_harmonic_mean
+    ]
+    best = max(
+        tied,
+        key=lambda record: (
+            record["adversarial_negative_rejection_rate"],
+            -record["threshold"],
+        ),
+    )
 
     return {"threshold": best["threshold"], "selected": best, "sweep": sweep}
 

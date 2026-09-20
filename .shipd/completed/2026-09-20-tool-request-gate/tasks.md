@@ -97,3 +97,47 @@
       overnight" — test that exact phrasing and report it.
 - [x] 7.5 [req: *] Re-run the full suite in two separate processes and confirm green both times.
 
+## 8. Sweep against adversarial negatives, not only the easy holdout
+
+- [x] 8.1 [req: gate-evaluation] Create `data/gate_adversarial.json` holding at least 40 narrative
+      past-tense negatives of the class the gate keeps failing — mundane mishaps, minor injuries,
+      near-misses and workplace anecdotes that ask for nothing — plus at least 20 genuine
+      incident-logging requests that must still be accepted. Label each. This file is an evaluation
+      set only and SHALL NOT be added to any training path.
+- [x] 8.2 [req: gate-threshold] Change `choose_gate_threshold` to score each candidate against the
+      holdout AND `data/gate_adversarial.json`, and to break ties on the adversarial
+      negative-rejection rate rather than by taking the lowest tying value. The holdout ties across a
+      0.20-wide band, so the previous rule was choosing arbitrarily inside a range it could not
+      discriminate — and picked the worst end.
+- [x] 8.3 [req: gate-threshold] Re-run the sweep and set `GATE_THRESHOLD` to whatever it now selects,
+      rewriting the comment with the new figures and recording that the tie-break is now adversarial
+      rejection. Measured guidance, verify rather than assume: holdout retention is 100% at both 0.35
+      and 0.45, while adversarial rejection is 17% at 0.35 and 83% at 0.45; 0.85 reaches 100%
+      adversarial but costs 5% holdout retention.
+- [x] 8.4 [req: tool-request-gate] Report, at the selected threshold, the adversarial rejection rate,
+      the genuine-retention rate, and every adversarial negative still accepted with its probability.
+- [x] 8.5 [req: *] Re-run the full suite in two separate processes and confirm green both times.
+
+## 9. Guard the measured bar with a test
+
+- [x] 9.1 [req: tool-request-gate] In `tests/test_tool_gate.py`, add a test loading the shipped
+      `data/gate_head.pt` at the shipped `GATE_THRESHOLD` that scores `data/gate_adversarial.json`
+      and asserts at least 90 percent of its negatives are rejected and at least 90 percent of its
+      genuine requests retained. Put the measured rates in the assertion message. Skip when the
+      checkpoint is absent. Without this the scenario is enforced only by prose and a regression
+      would pass unnoticed.
+- [x] 9.2 [req: *] Re-run the full suite in two separate processes and confirm green both times.
+
+## Token usage breakdown
+
+| Tool | Calls | Output tokens |
+| --- | --- | --- |
+| Bash | 255 | 104.4k |
+| Edit | 24 | 25.3k |
+| Write | 8 | 23.3k |
+| (no tool) | 0 | 22.7k |
+| Read | 34 | 12.3k |
+| Agent | 4 | 5.0k |
+| SendMessage | 3 | 4.0k |
+| ListAgents | 1 | 236 |
+| **Total** | 329 | 197.2k |

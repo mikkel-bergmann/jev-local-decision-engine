@@ -18,6 +18,21 @@ taking the existing tool-routing queries as positives and authored non-requests 
   question, or a request for a poem
 - **THEN** it reports the query as not a tool request
 
+#### Scenario: Narrative incident text is rejected at a measured rate
+- **WHEN** the gate scores the adversarial evaluation set of narrative past-tense statements about
+  mundane mishaps, none of which ask for anything
+- **THEN** it rejects at least nine tenths of them, while retaining at least nine tenths of the
+  genuine incident-logging requests in that same set
+
+The bar is a measured rate, not absolute rejection, because one class resists separation: minor-injury
+narrative and minor-injury logging differ by intent alone and share almost all their vocabulary.
+Measured at the shipped threshold of 0.55 — adversarial negatives rejected 43 of 45, genuine requests
+retained 24 of 25, holdout retention 40 of 40. The residuals are named rather than averaged away:
+"a customer's kid ran into the counter and bumped their head" is accepted at 0.898 and "I nearly
+slipped carrying the stock down to the basement" at 0.631, while "log that I cut my finger while
+slicing onions" is rejected at 0.458 despite its explicit logging verb. An absolute rejection claim
+would be unmeetable by any classifier and would leave this requirement permanently refuted.
+
 #### Scenario: The gate costs no extra encoder pass
 - **WHEN** a query is scored by both the gate and the tool head
 - **THEN** exactly one encoder forward pass executes

@@ -56,19 +56,31 @@ GATE_SCHEMA = {"is_tool_request": ["no", "yes"]}
 
 # The gate's decision threshold on its "yes" probability, chosen by
 # train_heads.choose_gate_threshold sweeping 0.10 to 0.90 in steps of 0.05
-# against data/gate_holdout.json (40 positives, 40 negatives) and selecting
-# the candidate that maximizes the harmonic mean of the negative-rejection
-# rate and the genuine-request retention rate — never picked by hand, per
-# `gate-threshold`. Re-measured 2026-09-20 against the shipped
-# data/gate_head.pt after adding 30 narrative-past-tense-incident negatives
-# to close the gap the validator found (the gate was accepting mundane
-# incident anecdotes like "my dog ate my homework" as tool requests): at
-# 0.35, precision 1.0, recall 1.0, and negative-rejection rate 1.0 on the
-# holdout (the sweep ties across 0.35-0.55; 0.35 is the lowest threshold
-# reaching that tie, so it biases toward retaining genuine requests when
-# candidates are otherwise equal). The prior measurement had selected 0.45;
-# it is superseded here rather than kept, per `gate-threshold`.
-GATE_THRESHOLD = 0.35
+# against data/gate_holdout.json (40 positives, 40 negatives) AND the
+# evaluation-only data/gate_adversarial.json (45 narrative-incident
+# negatives, 25 genuine incident-logging positives), per `gate-threshold`.
+#
+# The holdout alone ties at harmonic mean 1.0 across a 0.20-wide band
+# (0.35 to 0.55) — it cannot discriminate inside that range at all. An
+# earlier version of this sweep broke that tie by taking the lowest tying
+# value (0.35) and shipped it; the validator then found that 0.35 sat
+# inside the exact band where narrative past-tense incident negatives
+# (e.g. "yeah that email thread got out of hand fast") were re-admitted,
+# even though the retraining that produced this checkpoint had genuinely
+# pushed their scores down. The tie-break, not the model, was the bug: it
+# was choosing arbitrarily inside a range the holdout could not measure,
+# and happened to land on the worst end for that failure class. The sweep
+# now breaks any holdout tie on the adversarial negative-rejection rate
+# instead of on threshold order, so the choice is measured all the way
+# down rather than hand-picked at the last step.
+#
+# Re-measured 2026-09-20 against the shipped data/gate_head.pt: threshold
+# 0.55 — precision 1.0, recall 1.0, and negative-rejection rate 1.0 on the
+# holdout (tied with every other candidate from 0.35 to 0.55), with the
+# highest adversarial negative-rejection rate among the tied candidates at
+# 0.9556 (43/45), and adversarial genuine-retention rate 0.96 (24/25) at
+# that threshold. Reproduced identically across independent retrains.
+GATE_THRESHOLD = 0.55
 
 
 class DecisionHeads(torch.nn.Module):
