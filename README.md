@@ -218,6 +218,111 @@ made for convenience — and a caller who genuinely needs the `high`/
 `critical` distinction should use the engine's own four-class `urgency`
 field instead of the heads.
 
+## Tool routing: narrowing a large catalogue before the caller sees it
+
+`decision_heads.TOOL_SCHEMA` adds a second, independent head next to
+`HEADS_SCHEMA` above: `{"tool": load_tool_catalogue()}`, built from
+`data/tools.json` — 110 tool names mixing general-purpose developer and
+SaaS tools (`git_commit`, `stripe_refund`, `k8s_deploy`, ...) with a
+quick-service-restaurant operator's PCI-compliance and food-safety tools
+(`pci_asv_scan_start`, `haccp_checklist_submit`, `temp_log_fetch`, ...).
+The catalogue exists so an assistant carrying ~100 tools can narrow to a
+handful before its main model ever sees a tool description — one column
+added to the same shared encoder pass the three-field schema above already
+costs, not an extra forward pass.
+
+`run_heads_decision(text, heads, top_k=5)` is what makes that narrowing
+usable: every field's record now carries a `top_k` list of
+`{"choice", "probability"}` entries, ordered by descending probability,
+on top of the existing `decision` and `probabilities` keys — additive, so
+nothing about the three-field schema's return shape changes. The tool
+head returns a catalogue name and a probability for every tool, and never
+an argument, a parameter, or generated text.
+
+### Training
+
+Training data here is hand-authored for the same reason as the three-field
+schema's: the constrained engine cannot label tool routing at all, so
+distillation is not just rejected but unavailable. `data/tool_train_a.json`,
+`tool_train_b.json`, and `tool_train_c.json` carry three hand-written
+queries per tool (330 total, split across the catalogue's first, second,
+and final thirds — the final third takes the most care, since that is
+where the PCI/HACCP/temperature/audit near-neighbour families live). For
+every tool, at least one of its three training queries shares no word with
+the tool's own name, so the head can't get away with string matching —
+`haccp_checklist_submit` trains on both `"haccp checklist submit for the
+morning shift"` and `"log today's kitchen safety checks"`.
+
+```python
+from train_heads import train_tool_head
+
+heads = train_tool_head()  # loads the three tool_train_*.json files, trains, saves to data/tool_head.pt
+```
+
+### Running
+
+```python
+from decision_heads import TOOL_SCHEMA, load_heads, run_heads_decision
+
+heads = load_heads("data/tool_head.pt", TOOL_SCHEMA)
+result = run_heads_decision("log today's kitchen safety checks", heads, top_k=5)
+print(result["decisions"]["tool"]["decision"])   # 'haccp_checklist_submit'
+print(result["decisions"]["tool"]["top_k"])      # ranked shortlist of 5
+```
+
+### Measured recall and latency
+
+Scored on `data/tool_holdout.json` — 110 items, one hand-authored query per
+tool, written last and disjoint from every training file
+(`train_heads.evaluate_tool_head`):
+
+| metric | value |
+|---|---|
+| recall@5 | 0.9545 (105 / 110) |
+| recall@1 | 0.8455 (93 / 110) |
+| tools never predicted at top-1 | 14 / 110 |
+| warm latency (`run_heads_decision`, after a warm-up call, `torch.mps.synchronize()` around the timed region) | ~30 ms |
+
+The 14 tools the head's top-1 decision never lands on anywhere in the
+holdout: `aws_lambda_invoke`, `aws_s3_upload`,
+`calendar_availability_check`, `calendar_event_cancel`,
+`cloudflare_dns_update`, `git_branch_create`, `git_pull`,
+`github_issue_create`, `haccp_checklist_submit`, `jira_ticket_update`,
+`pci_asv_scan_start`, `salesforce_lead_create`, `stripe_charge_create`,
+`web_search`. All but two of these (`haccp_checklist_submit`,
+`pci_asv_scan_start`) are general developer/SaaS tools — see the domain
+caveat below.
+
+### Evaluation caveats
+
+Two things materially qualify the 0.9545 headline before it is quoted on
+its own:
+
+- **Lexical closeness to training phrasing inflates it.** For each holdout
+  item, the largest word-level Jaccard similarity against that same tool's
+  three training queries was computed, and the 110 items were split at the
+  median of that value into two 55-item halves. The half phrased closer to
+  what the head trained on (mean Jaccard 0.535) reaches recall@1 0.964 and
+  recall@5 1.000; the half with genuinely more novel phrasing (mean
+  Jaccard 0.285) reaches recall@1 0.727 and recall@5 0.909. **On phrasing
+  that doesn't echo anything the head has seen, expect roughly 0.91
+  recall@5, not 0.95** — still a strong pre-filter for a 110-tool
+  catalogue at three hand-authored examples per class, but the headline
+  figure is measuring lexical echo as well as intent.
+- **Accuracy splits sharply by tool domain.** Splitting the catalogue the
+  way it was built — the first 65 general-purpose developer/SaaS tools in
+  `data/tools.json` against the last 45 QSR PCI-compliance and
+  food-safety tools — the compliance tools reach recall@1 0.956 and
+  recall@5 0.978, while the general tools reach recall@1 0.769 and
+  recall@5 0.938. Every never-predicted tool listed above except
+  `haccp_checklist_submit` and `pci_asv_scan_start` is a general tool.
+  This tracks: `web_search` and `git_pull` overlap semantically with much
+  of the rest of the catalogue, while PCI and food-safety intents are
+  narrower and more specific. **A catalogue weighted more toward generic,
+  overlapping tools would score worse than this headline implies** — part
+  of the 0.9545 here comes from this catalogue's own mix, not from the
+  head alone.
+
 ## Tests
 
 ```bash

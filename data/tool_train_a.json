@@ -1,0 +1,149 @@
+[
+  {"text": "Can you look that up online for me?", "tool": "web_search"},
+  {"text": "web search: best noise-cancelling headphones under $200", "tool": "web_search"},
+  {"text": "Find out who won the game last night", "tool": "web_search"},
+
+  {"text": "Pull all the product prices off that competitor's site", "tool": "web_scrape"},
+  {"text": "scrape the homepage for pricing data", "tool": "web_scrape"},
+  {"text": "grab every article title from that news page into a list", "tool": "web_scrape"},
+
+  {"text": "save these changes with a message", "tool": "git_commit"},
+  {"text": "git commit -m 'fix login bug'", "tool": "git_commit"},
+  {"text": "record this snapshot of the code with a short note", "tool": "git_commit"},
+
+  {"text": "send my local changes up to the remote repo", "tool": "git_push"},
+  {"text": "git push to origin main", "tool": "git_push"},
+  {"text": "upload my latest commits to GitHub", "tool": "git_push"},
+
+  {"text": "grab the latest changes from the remote branch", "tool": "git_pull"},
+  {"text": "git pull origin main", "tool": "git_pull"},
+  {"text": "sync my local copy with what's on the server", "tool": "git_pull"},
+
+  {"text": "start a new feature branch called payments-fix", "tool": "git_branch_create"},
+  {"text": "git branch create hotfix/login", "tool": "git_branch_create"},
+  {"text": "spin off a separate line of work from main", "tool": "git_branch_create"},
+
+  {"text": "show me what changed between these two commits", "tool": "git_diff_view"},
+  {"text": "git diff view for the last commit", "tool": "git_diff_view"},
+  {"text": "what lines did I edit since yesterday", "tool": "git_diff_view"},
+
+  {"text": "show me the history for this file", "tool": "git_log_fetch"},
+  {"text": "git log fetch for the last 20 commits", "tool": "git_log_fetch"},
+  {"text": "who touched this file recently and what did they change", "tool": "git_log_fetch"},
+
+  {"text": "combine the feature branch into main", "tool": "git_merge"},
+  {"text": "git merge develop into release", "tool": "git_merge"},
+  {"text": "bring those two branches together", "tool": "git_merge"},
+
+  {"text": "ship the new image to the cluster", "tool": "k8s_deploy"},
+  {"text": "k8s deploy the updated app version", "tool": "k8s_deploy"},
+  {"text": "push this release live to the production pods", "tool": "k8s_deploy"},
+
+  {"text": "bump up the number of running pods to ten", "tool": "k8s_scale"},
+  {"text": "k8s scale the frontend deployment to 5 replicas", "tool": "k8s_scale"},
+  {"text": "we're getting hammered with traffic, add more instances", "tool": "k8s_scale"},
+
+  {"text": "undo the last deployment, it's broken", "tool": "k8s_rollback"},
+  {"text": "k8s rollback to the previous revision", "tool": "k8s_rollback"},
+  {"text": "revert the cluster to what was running yesterday", "tool": "k8s_rollback"},
+
+  {"text": "show me what's currently running in the cluster", "tool": "k8s_pod_list"},
+  {"text": "k8s pod list for the staging namespace", "tool": "k8s_pod_list"},
+  {"text": "which containers are up right now", "tool": "k8s_pod_list"},
+
+  {"text": "package this app into an image", "tool": "docker_build"},
+  {"text": "docker build the latest Dockerfile", "tool": "docker_build"},
+  {"text": "compile the container from source", "tool": "docker_build"},
+
+  {"text": "upload this image to the registry", "tool": "docker_push"},
+  {"text": "docker push the tagged image to Docker Hub", "tool": "docker_push"},
+  {"text": "publish the container so the deploy pipeline can grab it", "tool": "docker_push"},
+
+  {"text": "start up that container locally", "tool": "docker_run"},
+  {"text": "docker run the postgres image on port 5432", "tool": "docker_run"},
+  {"text": "fire up an instance of this image so I can test it", "tool": "docker_run"},
+
+  {"text": "give this customer their money back", "tool": "stripe_refund"},
+  {"text": "stripe refund for order #4521", "tool": "stripe_refund"},
+  {"text": "the charge on invoice 998 needs to be reversed", "tool": "stripe_refund"},
+
+  {"text": "bill the customer's card on file for $49.99", "tool": "stripe_charge_create"},
+  {"text": "stripe charge create for the annual plan", "tool": "stripe_charge_create"},
+  {"text": "run a one-time payment against their saved card", "tool": "stripe_charge_create"},
+
+  {"text": "email the customer their bill for this month", "tool": "stripe_invoice_send"},
+  {"text": "stripe invoice send to acme corp", "tool": "stripe_invoice_send"},
+  {"text": "get a statement out to them for the outstanding balance", "tool": "stripe_invoice_send"},
+
+  {"text": "pull up their billing profile", "tool": "stripe_customer_lookup"},
+  {"text": "stripe customer lookup for jane@example.com", "tool": "stripe_customer_lookup"},
+  {"text": "find the payment record tied to this account", "tool": "stripe_customer_lookup"},
+
+  {"text": "post a message in the #general channel", "tool": "slack_send"},
+  {"text": "slack send: deploy finished successfully", "tool": "slack_send"},
+  {"text": "let the team know the build is done", "tool": "slack_send"},
+
+  {"text": "set up a new room for the launch project", "tool": "slack_channel_create"},
+  {"text": "slack channel create #q4-launch", "tool": "slack_channel_create"},
+  {"text": "spin up a space for the marketing team to chat", "tool": "slack_channel_create"},
+
+  {"text": "find that thread where we discussed the outage", "tool": "slack_message_search"},
+  {"text": "slack message search for 'database migration'", "tool": "slack_message_search"},
+  {"text": "dig up what Sarah said about the budget last week", "tool": "slack_message_search"},
+
+  {"text": "open a pull request for this branch", "tool": "github_pr_create"},
+  {"text": "github pr create from feature/login to main", "tool": "github_pr_create"},
+  {"text": "put this change up for review", "tool": "github_pr_create"},
+
+  {"text": "file a bug report for the crash on login", "tool": "github_issue_create"},
+  {"text": "github issue create: broken pagination on the docs page", "tool": "github_issue_create"},
+  {"text": "log this as a ticket in the tracker", "tool": "github_issue_create"},
+
+  {"text": "mark that bug as resolved", "tool": "github_issue_close"},
+  {"text": "github issue close #204", "tool": "github_issue_close"},
+  {"text": "we fixed it, shut the ticket", "tool": "github_issue_close"},
+
+  {"text": "open a new task for the redesign work", "tool": "jira_ticket_create"},
+  {"text": "jira ticket create for the Q3 sprint", "tool": "jira_ticket_create"},
+  {"text": "log a work item for this bug", "tool": "jira_ticket_create"},
+
+  {"text": "move that task to in-progress", "tool": "jira_ticket_update"},
+  {"text": "jira ticket update: change status to blocked", "tool": "jira_ticket_update"},
+  {"text": "add a comment to the story about the delay", "tool": "jira_ticket_update"},
+
+  {"text": "book a meeting with the design team for Thursday", "tool": "calendar_event_create"},
+  {"text": "calendar event create: 1:1 with manager at 3pm", "tool": "calendar_event_create"},
+  {"text": "put a 30-minute sync on my schedule tomorrow", "tool": "calendar_event_create"},
+
+  {"text": "cancel my 2pm meeting", "tool": "calendar_event_cancel"},
+  {"text": "calendar event cancel for Friday's standup", "tool": "calendar_event_cancel"},
+  {"text": "I can't make that appointment, take it off my schedule", "tool": "calendar_event_cancel"},
+
+  {"text": "when am I free next week", "tool": "calendar_availability_check"},
+  {"text": "calendar availability check for Tuesday afternoon", "tool": "calendar_availability_check"},
+  {"text": "find a time that works for both of us", "tool": "calendar_availability_check"},
+
+  {"text": "shoot the client a quick note about the delay", "tool": "email_send"},
+  {"text": "email send to the whole team about the outage", "tool": "email_send"},
+  {"text": "get a message out to support@vendor.com", "tool": "email_send"},
+
+  {"text": "write up a note to the investors, don't send it yet", "tool": "email_draft_create"},
+  {"text": "email draft create for the follow-up to yesterday's call", "tool": "email_draft_create"},
+  {"text": "start a thank-you message for the speakers, I'll review before sending", "tool": "email_draft_create"},
+
+  {"text": "find that message from accounting about the invoice", "tool": "email_search"},
+  {"text": "email search for 'contract renewal'", "tool": "email_search"},
+  {"text": "dig through my inbox for anything from the lawyer", "tool": "email_search"},
+
+  {"text": "log this new prospect from the trade show", "tool": "salesforce_lead_create"},
+  {"text": "salesforce lead create for the demo request", "tool": "salesforce_lead_create"},
+  {"text": "add this person to the pipeline as a new prospect", "tool": "salesforce_lead_create"},
+
+  {"text": "move that deal to the negotiation stage", "tool": "salesforce_opportunity_update"},
+  {"text": "salesforce opportunity update: close date pushed to next month", "tool": "salesforce_opportunity_update"},
+  {"text": "bump the deal value on the Acme account", "tool": "salesforce_opportunity_update"},
+
+  {"text": "pull up the record for John at Acme", "tool": "salesforce_contact_search"},
+  {"text": "salesforce contact search for jane.doe@acme.com", "tool": "salesforce_contact_search"},
+  {"text": "find who our main point of contact is at that company", "tool": "salesforce_contact_search"}
+]

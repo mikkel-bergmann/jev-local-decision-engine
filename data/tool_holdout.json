@@ -1,0 +1,442 @@
+[
+  {
+    "text": "any idea what people are saying about this online",
+    "tool": "web_search"
+  },
+  {
+    "text": "pull down every price listed on that page",
+    "tool": "web_scrape"
+  },
+  {
+    "text": "save these edits with a short note explaining what changed",
+    "tool": "git_commit"
+  },
+  {
+    "text": "get my changes up onto the shared repo",
+    "tool": "git_push"
+  },
+  {
+    "text": "make sure I have everyone else's latest work locally",
+    "tool": "git_pull"
+  },
+  {
+    "text": "spin up a separate line for the refactor",
+    "tool": "git_branch_create"
+  },
+  {
+    "text": "what exactly did I change since this morning",
+    "tool": "git_diff_view"
+  },
+  {
+    "text": "who last touched this config file",
+    "tool": "git_log_fetch"
+  },
+  {
+    "text": "fold the hotfix branch back into main",
+    "tool": "git_merge"
+  },
+  {
+    "text": "get the new build running on the cluster",
+    "tool": "k8s_deploy"
+  },
+  {
+    "text": "we need more replicas, traffic is spiking",
+    "tool": "k8s_scale"
+  },
+  {
+    "text": "roll everything back, the new version is broken",
+    "tool": "k8s_rollback"
+  },
+  {
+    "text": "what's currently alive in the namespace",
+    "tool": "k8s_pod_list"
+  },
+  {
+    "text": "package up the app into a container image",
+    "tool": "docker_build"
+  },
+  {
+    "text": "get this image up to the registry so CI can grab it",
+    "tool": "docker_push"
+  },
+  {
+    "text": "spin up a local instance of this image",
+    "tool": "docker_run"
+  },
+  {
+    "text": "the customer wants their money back on that order",
+    "tool": "stripe_refund"
+  },
+  {
+    "text": "run their card for this month's plan",
+    "tool": "stripe_charge_create"
+  },
+  {
+    "text": "get a bill out to them for the outstanding balance",
+    "tool": "stripe_invoice_send"
+  },
+  {
+    "text": "find their billing history",
+    "tool": "stripe_customer_lookup"
+  },
+  {
+    "text": "drop a note in the team channel about the outage",
+    "tool": "slack_send"
+  },
+  {
+    "text": "make a new space for the launch team to coordinate",
+    "tool": "slack_channel_create"
+  },
+  {
+    "text": "dig up that conversation about the API keys",
+    "tool": "slack_message_search"
+  },
+  {
+    "text": "put this branch up for review",
+    "tool": "github_pr_create"
+  },
+  {
+    "text": "log a bug for the broken checkout flow",
+    "tool": "github_issue_create"
+  },
+  {
+    "text": "that ticket's been handled, shut it",
+    "tool": "github_issue_close"
+  },
+  {
+    "text": "open a work item for the redesign",
+    "tool": "jira_ticket_create"
+  },
+  {
+    "text": "bump that story to done",
+    "tool": "jira_ticket_update"
+  },
+  {
+    "text": "get something on the calendar for our 1:1 next week",
+    "tool": "calendar_event_create"
+  },
+  {
+    "text": "pull tomorrow's sync off my schedule",
+    "tool": "calendar_event_cancel"
+  },
+  {
+    "text": "see what times I've got open Thursday",
+    "tool": "calendar_availability_check"
+  },
+  {
+    "text": "get a note out to the client about the timeline slip",
+    "tool": "email_send"
+  },
+  {
+    "text": "start writing something to the board, don't send yet",
+    "tool": "email_draft_create"
+  },
+  {
+    "text": "find that note from legal about the NDA",
+    "tool": "email_search"
+  },
+  {
+    "text": "add this trade-show contact to the pipeline",
+    "tool": "salesforce_lead_create"
+  },
+  {
+    "text": "the deal size just changed, update the record",
+    "tool": "salesforce_opportunity_update"
+  },
+  {
+    "text": "who's our point person at that account",
+    "tool": "salesforce_contact_search"
+  },
+  {
+    "text": "open a case for the guy locked out of his account",
+    "tool": "zendesk_ticket_create"
+  },
+  {
+    "text": "that customer issue is handled, close it out",
+    "tool": "zendesk_ticket_close"
+  },
+  {
+    "text": "get another box running in the east region",
+    "tool": "aws_ec2_launch"
+  },
+  {
+    "text": "drop this export into the archive bucket",
+    "tool": "aws_s3_upload"
+  },
+  {
+    "text": "kick off the background job manually",
+    "tool": "aws_lambda_invoke"
+  },
+  {
+    "text": "point this new subdomain somewhere",
+    "tool": "dns_record_create"
+  },
+  {
+    "text": "we don't need that old subdomain entry anymore",
+    "tool": "dns_record_delete"
+  },
+  {
+    "text": "show me what's configured under our domain",
+    "tool": "dns_zone_lookup"
+  },
+  {
+    "text": "how many signups did we get this week",
+    "tool": "database_query_run"
+  },
+  {
+    "text": "grab a snapshot before we touch the schema",
+    "tool": "database_backup_create"
+  },
+  {
+    "text": "start a blank workbook for tracking expenses",
+    "tool": "spreadsheet_create"
+  },
+  {
+    "text": "add this week's numbers to the shared sheet",
+    "tool": "spreadsheet_update"
+  },
+  {
+    "text": "get me a downloadable copy of that workbook",
+    "tool": "spreadsheet_export"
+  },
+  {
+    "text": "turn this summary into something printable",
+    "tool": "pdf_generate"
+  },
+  {
+    "text": "combine the receipt and invoice into one file",
+    "tool": "pdf_merge"
+  },
+  {
+    "text": "pull the wording out of that scanned form",
+    "tool": "pdf_extract_text"
+  },
+  {
+    "text": "what's this paragraph say in English",
+    "tool": "translate_text"
+  },
+  {
+    "text": "will it rain during the game this weekend",
+    "tool": "weather_lookup"
+  },
+  {
+    "text": "shoot the driver a quick text that the order's up",
+    "tool": "twilio_sms_send"
+  },
+  {
+    "text": "give the vendor a call to confirm the shipment",
+    "tool": "twilio_call_place"
+  },
+  {
+    "text": "save this new sign-up's info from the demo",
+    "tool": "hubspot_contact_create"
+  },
+  {
+    "text": "bump that account's stage now that they've signed",
+    "tool": "hubspot_deal_update"
+  },
+  {
+    "text": "start a doc for the roadmap notes",
+    "tool": "notion_page_create"
+  },
+  {
+    "text": "get the new site changes live",
+    "tool": "vercel_deploy"
+  },
+  {
+    "text": "point the root domain at the new server",
+    "tool": "cloudflare_dns_update"
+  },
+  {
+    "text": "cut everyone's check for this cycle",
+    "tool": "payroll_run"
+  },
+  {
+    "text": "file my receipts from the trip",
+    "tool": "expense_report_submit"
+  },
+  {
+    "text": "send in my hours for the week",
+    "tool": "timesheet_submit"
+  },
+  {
+    "text": "get the quarterly network sweep going",
+    "tool": "pci_asv_scan_start"
+  },
+  {
+    "text": "how's that vulnerability sweep coming along",
+    "tool": "pci_asv_scan_status"
+  },
+  {
+    "text": "I need the writeup from last week's sweep for the auditor",
+    "tool": "pci_asv_scan_report"
+  },
+  {
+    "text": "start a fresh compliance questionnaire for this year",
+    "tool": "pci_saq_generate"
+  },
+  {
+    "text": "send the finished questionnaire to the bank",
+    "tool": "pci_saq_submit"
+  },
+  {
+    "text": "has the processor gotten back to us on our filing",
+    "tool": "pci_saq_status"
+  },
+  {
+    "text": "where do we stand overall on card-data compliance",
+    "tool": "pci_compliance_status"
+  },
+  {
+    "text": "attach the firewall screenshots to our compliance file",
+    "tool": "pci_evidence_upload"
+  },
+  {
+    "text": "line up the outside team to try to break in",
+    "tool": "pci_penetration_test_schedule"
+  },
+  {
+    "text": "patch that hole the scanner found before it's exploited",
+    "tool": "pci_vulnerability_remediate"
+  },
+  {
+    "text": "turn in the morning safety walkthrough",
+    "tool": "haccp_checklist_submit"
+  },
+  {
+    "text": "build a new check sheet for the new fryer station",
+    "tool": "haccp_checklist_create"
+  },
+  {
+    "text": "note how we handled the temperature problem from earlier",
+    "tool": "haccp_corrective_action_log"
+  },
+  {
+    "text": "look back over last month's food safety records",
+    "tool": "haccp_log_review"
+  },
+  {
+    "text": "rewrite our control points now that the menu changed",
+    "tool": "haccp_plan_update"
+  },
+  {
+    "text": "someone left the walk-in door open overnight, flag it",
+    "tool": "haccp_violation_report"
+  },
+  {
+    "text": "show me the cooler readings from overnight",
+    "tool": "temp_log_fetch"
+  },
+  {
+    "text": "the walk-in's reading 39 right now, jot it down",
+    "tool": "temp_log_submit"
+  },
+  {
+    "text": "I saw the freezer warning, mark it acknowledged",
+    "tool": "temp_alert_ack"
+  },
+  {
+    "text": "the probe seems off, get it recalibrated",
+    "tool": "temp_sensor_calibrate"
+  },
+  {
+    "text": "raise the point where the cooler sends an alert",
+    "tool": "temp_threshold_update"
+  },
+  {
+    "text": "put together the writeup from last week's walkthrough",
+    "tool": "audit_report_generate"
+  },
+  {
+    "text": "pencil in the next internal review",
+    "tool": "audit_schedule_create"
+  },
+  {
+    "text": "that flagged item is fixed now, close it out",
+    "tool": "audit_finding_close"
+  },
+  {
+    "text": "go through the front-of-house review right now",
+    "tool": "audit_checklist_run"
+  },
+  {
+    "text": "pull up every walkthrough we've done this year",
+    "tool": "audit_history_fetch"
+  },
+  {
+    "text": "the new sauce has dairy in it, update the chart",
+    "tool": "allergen_matrix_update"
+  },
+  {
+    "text": "print a tag showing what's in the seasonal soup",
+    "tool": "allergen_label_generate"
+  },
+  {
+    "text": "a guest says they reacted to something they ate here",
+    "tool": "allergen_incident_report"
+  },
+  {
+    "text": "write up what the county inspector found today",
+    "tool": "health_inspection_report"
+  },
+  {
+    "text": "get the annual county visit on the calendar",
+    "tool": "health_inspection_schedule"
+  },
+  {
+    "text": "note the citation we got for the leaky sink",
+    "tool": "health_violation_log"
+  },
+  {
+    "text": "tell every location to pull that lettuce shipment",
+    "tool": "food_recall_notice_send"
+  },
+  {
+    "text": "record what we had to toss at closing tonight",
+    "tool": "food_waste_log"
+  },
+  {
+    "text": "double check our produce vendor's paperwork is current",
+    "tool": "supplier_certificate_verify"
+  },
+  {
+    "text": "look over this morning's truck before we sign for it",
+    "tool": "supplier_delivery_inspect"
+  },
+  {
+    "text": "turn in tonight's cleaning notes",
+    "tool": "sanitation_log_submit"
+  },
+  {
+    "text": "set up who deep-cleans the grill each week",
+    "tool": "sanitation_schedule_create"
+  },
+  {
+    "text": "note that the exterminator swung by today",
+    "tool": "pest_control_log"
+  },
+  {
+    "text": "make sure the new cook's handler card hasn't expired",
+    "tool": "employee_food_safety_cert_verify"
+  },
+  {
+    "text": "the truck's fridge died in transit, log it",
+    "tool": "cold_chain_breach_report"
+  },
+  {
+    "text": "file tonight's closing duties list",
+    "tool": "cleaning_checklist_submit"
+  },
+  {
+    "text": "figure out which stores got that bad batch",
+    "tool": "recall_traceability_lookup"
+  },
+  {
+    "text": "someone got burned on the line, write it up",
+    "tool": "incident_report_file"
+  },
+  {
+    "text": "mark that the new hire finished her safety course",
+    "tool": "training_completion_log"
+  }
+]
