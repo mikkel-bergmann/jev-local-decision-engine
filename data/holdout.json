@@ -1,0 +1,362 @@
+[
+  {
+    "text": "The autopay charge that hit my card last month felt a little higher than usual, and it's been bugging me ever since — could someone look into why, whenever there's time?",
+    "category": "billing",
+    "urgency": "low",
+    "sentiment": "negative"
+  },
+  {
+    "text": "I noticed a small discrepancy between the invoice total and what I expected to pay, and I'm curious what caused it. No particular deadline on my end.",
+    "category": "billing",
+    "urgency": "low",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Just wanted to say the new itemized invoice format is much easier to read than the old one — nice improvement, and thanks for making the change.",
+    "category": "billing",
+    "urgency": "low",
+    "sentiment": "positive"
+  },
+  {
+    "text": "I've been charged twice for the same subscription cycle now, and it's starting to feel like a pattern rather than a one-off mistake. Please sort this out in the next few days.",
+    "category": "billing",
+    "urgency": "medium",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Could you clarify how the proration works when a plan is upgraded partway through a billing cycle? I'd like to understand this before my next renewal.",
+    "category": "billing",
+    "urgency": "medium",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Your billing team resolved my refund request faster than I expected last time, and I wanted to flag a similar question about a partial credit on this month's statement.",
+    "category": "billing",
+    "urgency": "medium",
+    "sentiment": "positive"
+  },
+  {
+    "text": "My card was declined for the third time this week even though there are sufficient funds, and my account is now at risk of suspension. This needs attention today.",
+    "category": "billing",
+    "urgency": "high",
+    "sentiment": "negative"
+  },
+  {
+    "text": "There's a tax line item on this invoice I don't recognize, and I need an explanation before I approve the payment tomorrow.",
+    "category": "billing",
+    "urgency": "high",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "I appreciate how quickly the last billing issue was handled — I have another one that's a bit time-sensitive since our finance team closes the books soon.",
+    "category": "billing",
+    "urgency": "high",
+    "sentiment": "positive"
+  },
+  {
+    "text": "We were billed for an enterprise seat count that's triple what we actually have, and finance is asking questions right now. This has to be corrected before the end of the day.",
+    "category": "billing",
+    "urgency": "critical",
+    "sentiment": "negative"
+  },
+  {
+    "text": "The payment gateway just rejected our renewal transaction and our service is about to lapse within the hour — what are the next steps?",
+    "category": "billing",
+    "urgency": "critical",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Thanks for the heads-up about the price change — given it takes effect at midnight, could someone confirm my new rate before then?",
+    "category": "billing",
+    "urgency": "critical",
+    "sentiment": "positive"
+  },
+  {
+    "text": "The currency conversion on my last statement doesn't match the rate my bank quoted, and it's the second time this has happened this quarter.",
+    "category": "billing",
+    "urgency": "medium",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Great job catching that duplicate charge on your own — I do have one more billing question that I'd like answered before my card statement closes tomorrow.",
+    "category": "billing",
+    "urgency": "high",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Our non-profit discount seems to have dropped off this invoice and the payment is due within the hour — can you confirm whether that's intentional?",
+    "category": "billing",
+    "urgency": "critical",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "The mobile app has been logging me out randomly for a couple of weeks now, which is annoying, though it hasn't stopped me from getting my work done.",
+    "category": "technical_support",
+    "urgency": "low",
+    "sentiment": "negative"
+  },
+  {
+    "text": "I'm curious whether the dashboard's dark mode is still on the roadmap — not urgent, just wondering.",
+    "category": "technical_support",
+    "urgency": "low",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "The new sync feature between devices has been working beautifully, and I just wanted to mention it in case that kind of feedback is useful.",
+    "category": "technical_support",
+    "urgency": "low",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Every time I try to export a report larger than a few hundred rows, the browser tab freezes and I lose my place. This has happened three times this week.",
+    "category": "technical_support",
+    "urgency": "medium",
+    "sentiment": "negative"
+  },
+  {
+    "text": "I'd like to understand why two-factor authentication sometimes skips the code prompt on my laptop but not my phone.",
+    "category": "technical_support",
+    "urgency": "medium",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "The last patch fixed the crash I reported, so thank you for that — I do have a smaller glitch to flag when you have a moment.",
+    "category": "technical_support",
+    "urgency": "medium",
+    "sentiment": "positive"
+  },
+  {
+    "text": "The integration with our calendar system stopped syncing yesterday and half our team has already missed meetings because of it.",
+    "category": "technical_support",
+    "urgency": "high",
+    "sentiment": "negative"
+  },
+  {
+    "text": "I'm trying to figure out why the API is returning a 500 error on a specific endpoint before our demo tomorrow.",
+    "category": "technical_support",
+    "urgency": "high",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Support walked me through a fix last time that worked great, and I've hit a similar snag today that's blocking a deadline.",
+    "category": "technical_support",
+    "urgency": "high",
+    "sentiment": "positive"
+  },
+  {
+    "text": "The entire platform just went down for our whole team in the middle of a live customer call, and nothing is loading.",
+    "category": "technical_support",
+    "urgency": "critical",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Our production database connection dropped a few minutes ago and hasn't reconnected — is there an outage on your end?",
+    "category": "technical_support",
+    "urgency": "critical",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Your status page update was reassuring, but our workaround just failed too and we need another option before the meeting starts.",
+    "category": "technical_support",
+    "urgency": "critical",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Uploads keep timing out on files over 50 megabytes, and it's slowing down our whole onboarding process this week.",
+    "category": "technical_support",
+    "urgency": "medium",
+    "sentiment": "negative"
+  },
+  {
+    "text": "I really liked how fast the chat widget loaded after yesterday's update, but now the search bar inside it has stopped returning any results and I need it working before my shift ends.",
+    "category": "technical_support",
+    "urgency": "high",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Every user in our workspace was just logged out simultaneously and can't sign back in — what's going on?",
+    "category": "technical_support",
+    "urgency": "critical",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "I looked at your pricing page again and I'm still not sure the mid-tier plan makes sense for a team our size, but there's no rush to talk it through.",
+    "category": "sales",
+    "urgency": "low",
+    "sentiment": "negative"
+  },
+  {
+    "text": "I'm gathering information on your enterprise offering for a proposal that's still a few months out.",
+    "category": "sales",
+    "urgency": "low",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "The demo last month was genuinely impressive, and I'd love to revisit pricing options sometime down the line.",
+    "category": "sales",
+    "urgency": "low",
+    "sentiment": "positive"
+  },
+  {
+    "text": "The quote we received seems to have left out the add-on seats we discussed, and it's making it harder to get sign-off internally this week.",
+    "category": "sales",
+    "urgency": "medium",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Could someone walk me through how the annual discount compares to paying monthly before our budget review next week?",
+    "category": "sales",
+    "urgency": "medium",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Our team liked the trial a lot, and we'd like to talk about a bulk discount before the trial period ends in a few days.",
+    "category": "sales",
+    "urgency": "medium",
+    "sentiment": "positive"
+  },
+  {
+    "text": "A competitor just undercut your quote significantly and I need a revised offer before our vendor decision meeting tomorrow.",
+    "category": "sales",
+    "urgency": "high",
+    "sentiment": "negative"
+  },
+  {
+    "text": "I need the final contract terms confirmed before I can present this to our board later today.",
+    "category": "sales",
+    "urgency": "high",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Everyone on our side is on board after the demo, and we just need pricing finalized before the end of the day to move forward.",
+    "category": "sales",
+    "urgency": "high",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Our procurement deadline is in an hour and we still haven't received the signed agreement your rep promised yesterday.",
+    "category": "sales",
+    "urgency": "critical",
+    "sentiment": "negative"
+  },
+  {
+    "text": "The trial expires at midnight and I still don't have an answer on whether a short extension is possible.",
+    "category": "sales",
+    "urgency": "critical",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "We're ready to sign right now, but the payment portal keeps erroring out and we need to close this before the fiscal quarter ends tonight.",
+    "category": "sales",
+    "urgency": "critical",
+    "sentiment": "positive"
+  },
+  {
+    "text": "The reseller partnership terms you sent don't match what was verbally agreed on the call, which is a problem for our contract review this week.",
+    "category": "sales",
+    "urgency": "medium",
+    "sentiment": "negative"
+  },
+  {
+    "text": "The custom bundle you put together looks great, but I need the final numbers today so I can get it in front of our CFO before her flight.",
+    "category": "sales",
+    "urgency": "high",
+    "sentiment": "positive"
+  },
+  {
+    "text": "We're finalizing vendor selection within the next hour and still need confirmation on the non-profit pricing tier.",
+    "category": "sales",
+    "urgency": "critical",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Your website lists two different sets of business hours for the downtown location, which is a little confusing, though I'm in no hurry to visit.",
+    "category": "general_inquiry",
+    "urgency": "low",
+    "sentiment": "negative"
+  },
+  {
+    "text": "I'm curious what languages your support team can assist in — just planning ahead for a future trip.",
+    "category": "general_inquiry",
+    "urgency": "low",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "I really enjoyed the community event last month and wanted to ask if there's a schedule for future ones.",
+    "category": "general_inquiry",
+    "urgency": "low",
+    "sentiment": "positive"
+  },
+  {
+    "text": "I've emailed the general inquiries address twice this week about your return policy and haven't heard anything back.",
+    "category": "general_inquiry",
+    "urgency": "medium",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Could you clarify what your terms of service say about data retention before I finalize a decision this week?",
+    "category": "general_inquiry",
+    "urgency": "medium",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Thanks for the quick reply about your press kit — I have one more question about media accreditation before our article goes out.",
+    "category": "general_inquiry",
+    "urgency": "medium",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Nobody has answered the phone at your main office in three attempts today, and I have a question that can't wait until tomorrow.",
+    "category": "general_inquiry",
+    "urgency": "high",
+    "sentiment": "negative"
+  },
+  {
+    "text": "I need to confirm your company's mailing address for a legal filing that's due later today.",
+    "category": "general_inquiry",
+    "urgency": "high",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Your careers page looks great, and I'd love to know the application deadline since it's coming up soon.",
+    "category": "general_inquiry",
+    "urgency": "high",
+    "sentiment": "positive"
+  },
+  {
+    "text": "A journalist is asking for comment on your return policy for a story publishing within the hour and nobody has responded to my inquiry.",
+    "category": "general_inquiry",
+    "urgency": "critical",
+    "sentiment": "negative"
+  },
+  {
+    "text": "I need your official office address confirmed in the next few minutes for a courier that's already on its way.",
+    "category": "general_inquiry",
+    "urgency": "critical",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "We're thrilled to be attending your event next week, but I need to confirm accessibility accommodations before registration closes tonight.",
+    "category": "general_inquiry",
+    "urgency": "critical",
+    "sentiment": "positive"
+  },
+  {
+    "text": "The feedback form on your site has been broken for days and I still can't submit a comment I've been trying to send since Monday.",
+    "category": "general_inquiry",
+    "urgency": "medium",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Loved the webinar yesterday — I do need to know today whether recordings are shared with attendees who couldn't make it live.",
+    "category": "general_inquiry",
+    "urgency": "high",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Your office relocation notice didn't include a new address and I need it within the hour to update a shipment already in transit.",
+    "category": "general_inquiry",
+    "urgency": "critical",
+    "sentiment": "neutral"
+  }
+]

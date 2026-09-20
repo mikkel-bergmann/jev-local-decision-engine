@@ -1,0 +1,422 @@
+[
+  {
+    "text": "Cancel my subscription.",
+    "category": "billing",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Quick one \u2014 does my plan renew automatically or do I need to do anything?",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "I would be grateful if someone could clarify the additional line item that appeared on this month's statement, as I do not recognize the charge and would like an explanation at your earliest convenience.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "This is the third time this month I've been charged for something I never ordered, and frankly I'm losing patience \u2014 please fix this today.",
+    "category": "billing",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Just wanted to say thanks \u2014 the refund for last month posted way faster than I expected!",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "My card keeps getting declined mid-checkout even though there's plenty of balance on it, and I've got a payment due in the next hour that absolutely cannot be late.",
+    "category": "billing",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Would you mind sending over a breakdown of what's included in the annual plan versus the monthly one? No particular timeline on my end.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "So sorry to bother you again, but I think the credit from last week never actually landed on my account \u2014 could you check when you get a chance?",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Appreciate the quick turnaround on my invoice question earlier today.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "URGENT: our whole team's cards were just charged twice for the enterprise plan and finance needs this reversed before close of business.",
+    "category": "billing",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Hey, does the family plan let each person set up their own payment method, or is it all billed to one card?",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Not happy about the price hike with zero warning.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "The tax calculation on invoice #4471 looks off \u2014 could someone double check it before I forward it to our accountant this afternoon?",
+    "category": "billing",
+    "urgency": "urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Switching plans through the dashboard took about thirty seconds \u2014 nicely done.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "We need the duplicate charge reversed right now \u2014 our account is nearly overdrawn because of it.",
+    "category": "billing",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "For our records, could you confirm the billing cycle start date for our account?",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Honestly, the new itemized receipts are a huge improvement, thank you for listening to feedback.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Our payment failed and the service is about to be suspended within the hour \u2014 please sort this out.",
+    "category": "billing",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "App won't open.",
+    "category": "technical_support",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Just curious \u2014 is there a keyboard shortcut for switching between projects?",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "I wanted to flag, calmly, that the new update seems to have broken the search function entirely, though I know these things happen and I'm not in any rush for a fix.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Everything crashed mid-presentation in front of our biggest client and I need someone on this in the next few minutes.",
+    "category": "technical_support",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Support fixed my sync issue in under ten minutes yesterday \u2014 genuinely impressed.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Could you walk me through setting up two-factor authentication? Not sure where to start.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "The export button has been greyed out for two days now and it's blocking our end-of-quarter reporting that's due tomorrow morning.",
+    "category": "technical_support",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Small thing, but the dark mode toggle resets every time I log back in.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "I'm so sorry to keep emailing about this, but the password reset link still isn't arriving in my inbox and I really need to get into my account before my shift starts in twenty minutes.",
+    "category": "technical_support",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Nice work on the redesign, the new layout is way more intuitive.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "None of our integrations have synced since this morning and the whole team is stuck waiting on it right now.",
+    "category": "technical_support",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Quick question: does the mobile app support offline mode yet?",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Another outage this week \u2014 it's starting to feel like nobody's watching the dashboards.",
+    "category": "technical_support",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Thank you for pushing that hotfix so fast, it saved our launch.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Not sure if this is a known issue, but uploads over 20MB seem to hang indefinitely.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Everything just froze mid-call with a customer and I need this fixed right now.",
+    "category": "technical_support",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Really appreciate how responsive the chat support has been this week.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "The API documentation for the new endpoint seems to be missing a required parameter \u2014 could someone take a look when there's time?",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "What's the price difference between the two top tiers?",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "We need pricing finalized within sixty minutes, our board meeting starts at noon and this is the last item on the agenda.",
+    "category": "sales",
+    "urgency": "urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Loved the demo, honestly one of the smoothest sales calls I've had in a while.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "This quote is nearly double what we discussed on the call and it's frankly a little insulting.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Hey! Just wondering if there's a discount for non-profits \u2014 we're a small one.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Our procurement deadline is in ninety minutes and legal still hasn't received the signed contract your rep promised us yesterday.",
+    "category": "sales",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Thanks for the follow-up, the bundle pricing makes a lot more sense now.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "I'd like to understand how seat-based pricing scales once we cross fifty users.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "We're ready to sign today if you can get the paperwork over by end of day.",
+    "category": "sales",
+    "urgency": "urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Frankly, this is the fourth reschedule from your side and it's wearing thin.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Could someone confirm whether the enterprise tier includes priority support?",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "The trial expires in an hour and I still haven't heard back about extending it, which is cutting it close.",
+    "category": "sales",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Really enjoyed meeting your team at the conference last week, would love to keep the conversation going.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Sorry to be that customer, but I need the final numbers today \u2014 my CFO's flight leaves in three hours.",
+    "category": "sales",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "No rush, just checking whether the reseller program is still open to new partners.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Your competitor just matched your price and threw in an extra year free, so I need a counteroffer before we sign with them this afternoon.",
+    "category": "sales",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "The custom bundle your rep put together looks fantastic, exactly what we needed.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "What are your hours on public holidays?",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "A journalist is asking for a comment on your return policy for a piece going live within the hour, and nobody at your office has picked up.",
+    "category": "general_inquiry",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "That community meetup last month was great \u2014 any more planned soon?",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Could you confirm your mailing address? I need it for a legal filing due today.",
+    "category": "general_inquiry",
+    "urgency": "urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "I've called three times today and nobody has picked up, and I have a question that genuinely cannot wait until tomorrow.",
+    "category": "general_inquiry",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Which languages does your support team cover?",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "That was an unusually thorough answer to my last email \u2014 thank you.",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Your website still lists the old office hours even though I know they changed months ago, which is a bit sloppy.",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Apologies for the odd question, but does your company sponsor local youth sports teams? A friend mentioned it and I wanted to check before I approach you about ours.",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "We're attending your event next week and need to confirm accessibility accommodations before registration closes tonight.",
+    "category": "general_inquiry",
+    "urgency": "urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "The feedback form on your site has been broken for days now and I can't get a message through no matter what I try.",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Congrats on the award announcement, well deserved!",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Do you have a registered office address on file? I need it before the next hour is out for a courier already en route.",
+    "category": "general_inquiry",
+    "urgency": "urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Is there a careers page for remote roles specifically?",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Nobody has responded to my press inquiry and my editor needs a quote before we go to print in twenty minutes.",
+    "category": "general_inquiry",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Your accessibility question turnaround the other day was impressively fast \u2014 wanted to say so.",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Do you offer any kind of student discount on memberships?",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  }
+]

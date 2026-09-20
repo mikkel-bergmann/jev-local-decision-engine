@@ -1,0 +1,362 @@
+[
+  {
+    "text": "You people never stop finding new ways to charge me for things I didn't sign up for.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "I'm at the register right now and the discount code isn't applying \u2014 the cashier is waiting.",
+    "category": "billing",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Honestly the new pricing tiers are clever, even if I grumbled about the increase at first.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Support keeps bouncing me between departments over what is, at the end of the day, just a wrong number on an invoice.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "The refund landed, finally, though it took three weeks longer than your policy states.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "My daughter's tuition payment is due at the registrar's office in the next fifteen minutes and your portal won't accept my card.",
+    "category": "billing",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Every single month it's something \u2014 last month a duplicate charge, this month a mystery fee.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "The proration on our downgrade actually worked out in our favor, which I wasn't expecting.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Can't believe I have to explain this again: the invoice total still doesn't match the quote I was given.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Between you and me, the loyalty discount almost makes up for how confusing the checkout page is.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Groom's here, caterer's demanding the deposit balance, and the payment link you sent keeps timing out.",
+    "category": "billing",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Three stars, not five: the refund process works, it's just slower than advertised.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "I don't even know who to be mad at anymore, but somebody billed me twice and somebody needs to fix it.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Turns out the annual plan really does pay for itself within a year, exactly like the sales page promised.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Coach is boarding the bus and the team's expense reimbursement still hasn't cleared.",
+    "category": "billing",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Not gonna lie, the new update is gorgeous, but three of my saved reports just vanished.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "The interview panel is already in the video call and my screen share button has stopped working entirely.",
+    "category": "technical_support",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Whoever wrote the error messages for this app has a great sense of humor, even if the bug itself is annoying.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "It's not broken exactly, just... slower than it used to be, in a way I can't quite put my finger on.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "The surgeon's on call and the scheduling app just kicked everyone off mid-shift.",
+    "category": "technical_support",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Fixed on their end apparently, though nobody told me it was fixed until I asked twice.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Your support agent yesterday was lovely, patient, and thorough \u2014 genuinely one of the better calls I've had with any company.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "The kids are logging on for their exam in a few minutes and the testing portal keeps timing out on every browser we've tried.",
+    "category": "technical_support",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "I get that bugs happen, I really do, but this is the fourth outage this quarter.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "The bug report form itself is broken, which feels almost poetic at this point.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Somehow the crash actually helped \u2014 I found a workaround that's faster than what I was doing before.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Board's dialing in from three time zones in a couple minutes and the conference room display won't mirror my laptop.",
+    "category": "technical_support",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "It works fine most days, so I won't complain too loudly, but today it really did not.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "The onboarding checklist is honestly one of the clearest I've seen from any product.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Every device in the lab just lost connection at once, mid-experiment, with the grant reviewers due to walk in.",
+    "category": "technical_support",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Impressive demo, terrifying price tag.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "The board convenes in a few minutes and they're waiting on the number your rep promised last week.",
+    "category": "sales",
+    "urgency": "urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "I keep going back and forth: the product's great, the contract terms less so.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Your rep clearly knows the product inside and out, even if the proposal itself needs work.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Every renewal cycle it's the same dance of me asking for the discount we always get anyway.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Our investors are touring the office in ten minutes and want to see the new dashboard your team promised for the pitch.",
+    "category": "sales",
+    "urgency": "urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Can't decide if I'm more impressed by the product or annoyed by how long the sales cycle has dragged on.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "The reseller terms finally make sense after that call, appreciate the patience.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Client's walking into the conference room now and I still don't have the final number to give them.",
+    "category": "sales",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "It's a good deal, I just wish it hadn't taken six emails to get here.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "This contract clause reads like it was written to confuse people, which, fine, but I still need it clarified.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "We shook hands on this weeks ago and now suddenly the price has changed \u2014 feels like the rug got pulled.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Runway's basically down to fumes and the board wants this vendor decision locked before the flight boards in twenty minutes.",
+    "category": "sales",
+    "urgency": "urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Genuinely torn: loved the free trial, hated how pushy the upsell emails got afterward.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "The proposal your team sent over this morning is exactly the kind of thing that makes vendor selection easy.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Love the mission, wish the website made it easier to find basic information like your address.",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "The shuttle to the airport leaves in a few minutes and I still can't find your office's exact floor on the directory.",
+    "category": "general_inquiry",
+    "urgency": "urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Not a complaint exactly, more a gentle nudge that the FAQ hasn't been updated in what looks like years.",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Your volunteer coordinator was wonderful to talk to, even though the sign-up form itself kept crashing.",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "The panel starts walking on stage in a couple minutes and I still haven't gotten confirmation on the accessible seating we requested.",
+    "category": "general_inquiry",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Can't fault the mission statement, but the careers page hasn't listed a single opening in months.",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "This is less a question and more an observation: your hold music has not changed in three years.",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Delivery driver's idling outside and the gate code on file doesn't seem to work anymore.",
+    "category": "general_inquiry",
+    "urgency": "urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Reasonably happy with the response time overall, though the first agent I spoke to seemed unsure of the policy.",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "The donation matching page is lovely to look at and completely unclear on how to actually submit a match request.",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Judges are seated already and I still don't have confirmation the exhibit space is wheelchair accessible.",
+    "category": "general_inquiry",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "To be fair, the newsletter content itself is great, I just wish unsubscribing weren't a five-step process.",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Sincerely one of the more pleasant customer interactions I've had all year, for what it's worth.",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "The train leaves the station in a few minutes and I still haven't received the confirmation code for tonight's event.",
+    "category": "general_inquiry",
+    "urgency": "urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Half impressed by the community outreach, half annoyed that it's buried three clicks deep on your site.",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  }
+]
