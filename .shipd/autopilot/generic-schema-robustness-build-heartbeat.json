@@ -1,0 +1,11 @@
+{
+  "kind": "build",
+  "location": "/Users/mikkelbergmann/projects/jevtest/.worktrees/generic-schema-robustness",
+  "seq": 4,
+  "session_id": "06ffc6f8-ddf3-45cd-ba2a-4dcc1af6cb1d",
+  "slug": "generic-schema-robustness",
+  "stage": "merge",
+  "started_at": 1789866415.620696,
+  "state": "running",
+  "updated_at": 1789868901.670023
+}
