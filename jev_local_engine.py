@@ -83,6 +83,84 @@ def run_jev_decision(text, schema):
     return {"decisions": decisions, "latency_ms": latency_ms}
 
 
+def run_jev_decision_batch(texts, schema):
+    """Score every text in `texts` against `schema` through the first-token
+    path, in one shared batched forward pass, and return one
+    schema-validated result per text, in input order.
+
+    Builds every text's field prompts (via `build_field_prompts`) and pads
+    all of them — every field, every text — into a single batch, so the
+    number of forward passes stays at one regardless of how many texts or
+    fields are involved. Each row's final position (position -1, since
+    padding is on the left) is read through `candidate_probabilities`,
+    exactly as `score_fields` reads a single text's rows.
+
+    Never calls `score_fields_full_sequence`: that path's log-probabilities
+    over the whole vocabulary need 1.2 GB at ten texts and grow with the
+    batch, so it stays unbatched (`batch-constrained-scoring`).
+
+    Each result has the same shape `run_jev_decision` returns for a single
+    text — `{"decisions": {...}, "latency_ms": ...}`. `latency_ms` is the
+    batch's total scoring time divided by `len(texts)`, so it reads as a
+    comparable per-prompt figure rather than the batch total.
+
+    `run_jev_decision` is untouched — this is a separate entry point.
+    """
+    model, tokenizer = _get_model_and_tokenizer()
+
+    if torch.backends.mps.is_available():
+        torch.mps.synchronize()
+    start = time.perf_counter()
+
+    fields = list(schema.keys())
+    all_prompts = []
+    row_text_index = []
+    for text_index, text in enumerate(texts):
+        _, prompts = build_field_prompts(tokenizer, text, schema)
+        all_prompts.extend(prompts)
+        row_text_index.extend([text_index] * len(prompts))
+
+    batch = tokenizer(
+        all_prompts, padding=True, return_tensors="pt", add_special_tokens=False
+    ).to(model.device)
+
+    with torch.no_grad():
+        outputs = model(**batch)
+    last_token_logits = outputs.logits[:, -1, :]
+
+    candidates_by_field = {
+        field: resolve_candidates(tokenizer, schema[field]) for field in fields
+    }
+
+    per_text_probabilities = [dict() for _ in texts]
+    for row, text_index in enumerate(row_text_index):
+        field = fields[row % len(fields)]
+        candidates = candidates_by_field[field]
+        candidate_ids = torch.tensor(
+            list(candidates.values()), dtype=torch.long, device=last_token_logits.device
+        )
+        probs = candidate_probabilities(last_token_logits[row], candidate_ids)
+        per_text_probabilities[text_index][field] = {
+            choice: float(prob) for choice, prob in zip(candidates.keys(), probs)
+        }
+
+    if torch.backends.mps.is_available():
+        torch.mps.synchronize()
+    latency_ms = (time.perf_counter() - start) * 1000 / len(texts)
+
+    decision_model = build_decision_model(schema)
+    results = []
+    for field_probabilities in per_text_probabilities:
+        decisions = {}
+        for field, probabilities in field_probabilities.items():
+            best_choice = max(probabilities, key=probabilities.get)
+            decisions[field] = {"decision": best_choice, "probabilities": probabilities}
+        decision_model(**{field: value["decision"] for field, value in decisions.items()})
+        results.append({"decisions": decisions, "latency_ms": latency_ms})
+
+    return results
+
+
 def load_model():
     """Load the Qwen model onto MPS in float16, plus its tokenizer.
 
