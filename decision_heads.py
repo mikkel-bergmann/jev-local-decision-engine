@@ -198,6 +198,60 @@ def run_heads_decision(text, heads, top_k=5):
     return {"decisions": decisions, "latency_ms": latency_ms}
 
 
+def run_heads_decision_batch(texts, heads, top_k=5):
+    """Score every text in `texts` against `heads` in one encoder forward
+    pass, returning one result per text, in input order.
+
+    Each result has the same shape `run_heads_decision` returns for a single
+    text — `{"decisions": {...}, "latency_ms": ...}` with `top_k` on every
+    field. `latency_ms` is the batch's total encode-plus-heads time divided
+    by `len(texts)`, so it reads as a comparable per-prompt figure rather
+    than the batch total.
+
+    Uses `torch.mps.synchronize()` around the timed region, same as
+    `run_heads_decision`, so MPS's asynchronous queue submission isn't
+    mistaken for compute time. `run_heads_decision` is untouched — this is a
+    separate entry point.
+    """
+    if torch.backends.mps.is_available():
+        torch.mps.synchronize()
+    start = time.perf_counter()
+
+    features = encode(texts)
+    with torch.no_grad():
+        field_probabilities = heads(features)
+
+    if torch.backends.mps.is_available():
+        torch.mps.synchronize()
+    latency_ms = (time.perf_counter() - start) * 1000 / len(texts)
+
+    results = []
+    for row in range(len(texts)):
+        decisions = {}
+        for field, probabilities in field_probabilities.items():
+            choices = heads.schema[field]
+            probs_by_choice = {
+                choice: float(prob)
+                for choice, prob in zip(choices, probabilities[row])
+            }
+            best_choice = max(probs_by_choice, key=probs_by_choice.get)
+            ranked = sorted(
+                probs_by_choice.items(), key=lambda kv: kv[1], reverse=True
+            )
+            top_k_list = [
+                {"choice": choice, "probability": prob}
+                for choice, prob in ranked[:top_k]
+            ]
+            decisions[field] = {
+                "decision": best_choice,
+                "probabilities": probs_by_choice,
+                "top_k": top_k_list,
+            }
+        results.append({"decisions": decisions, "latency_ms": latency_ms})
+
+    return results
+
+
 def route_tool(text, tool_heads, gate_head, threshold=GATE_THRESHOLD):
     """Route `text` to a tool, consulting `gate_head` before `tool_heads` so
     the router can abstain instead of always naming a catalogue tool.
@@ -263,6 +317,75 @@ def route_tool(text, tool_heads, gate_head, threshold=GATE_THRESHOLD):
         "tool": best_tool,
         "top_k": top_k_list,
     }
+
+
+def route_tool_batch(texts, tool_heads, gate_head, threshold=GATE_THRESHOLD):
+    """Route every text in `texts` to a tool, encoding all of them in one
+    shared encoder forward pass and reusing those features for both the
+    gate head and the tool head.
+
+    Returns one result per text, in input order, each carrying the same
+    keys `route_tool` returns for a single text: `{"is_tool_request": bool,
+    "gate_probability": float, "tool": str | None, "top_k": list}`. A text
+    the gate head rejects (its "yes" probability below `threshold`) carries
+    no tool name and an empty shortlist, exactly as `route_tool` reports it.
+
+    `route_tool` is untouched — this is a separate entry point.
+    """
+    features = encode(texts)
+
+    with torch.no_grad():
+        gate_probabilities = gate_head(features)
+    gate_choices = gate_head.schema["is_tool_request"]
+
+    with torch.no_grad():
+        tool_probabilities = tool_heads(features)
+    tool_choices = tool_heads.schema["tool"]
+
+    results = []
+    for row in range(len(texts)):
+        gate_probs_by_choice = {
+            choice: float(prob)
+            for choice, prob in zip(
+                gate_choices, gate_probabilities["is_tool_request"][row]
+            )
+        }
+        gate_probability = gate_probs_by_choice["yes"]
+        is_tool_request = gate_probability >= threshold
+
+        if not is_tool_request:
+            results.append(
+                {
+                    "is_tool_request": False,
+                    "gate_probability": gate_probability,
+                    "tool": None,
+                    "top_k": [],
+                }
+            )
+            continue
+
+        tool_probs_by_choice = {
+            choice: float(prob)
+            for choice, prob in zip(tool_choices, tool_probabilities["tool"][row])
+        }
+        best_tool = max(tool_probs_by_choice, key=tool_probs_by_choice.get)
+        ranked = sorted(
+            tool_probs_by_choice.items(), key=lambda kv: kv[1], reverse=True
+        )
+        top_k_list = [
+            {"choice": choice, "probability": prob} for choice, prob in ranked[:5]
+        ]
+
+        results.append(
+            {
+                "is_tool_request": True,
+                "gate_probability": gate_probability,
+                "tool": best_tool,
+                "top_k": top_k_list,
+            }
+        )
+
+    return results
 
 
 def save_heads(heads, path):
