@@ -1,0 +1,362 @@
+[
+  {
+    "text": "Overage fees on the metered plan jumped without any notice this cycle.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "The expense report system rejected our corporate card charge and finance closes the books in the next twenty minutes.",
+    "category": "billing",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Bundling the two subscriptions together actually saved us more than I expected.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "There's a line item on invoice 8821 labeled simply 'misc' and nobody here can tell what it's for.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Switching from monthly to annual billing halfway through a cycle \u2014 does that require a new contract?",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "My referral credit never showed up even though the friend I invited has been paying for two months.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Price-lock guarantee, my foot \u2014 the rate went up the very next renewal.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Insurance is asking for an itemized billing statement and the portal only lets me download a summary, which they won't accept for the claim deadline this afternoon.",
+    "category": "billing",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Just confirming our nonprofit rate is still active before we renew next quarter.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Splitting this invoice across two departments turned out to be far simpler than I feared.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Requesting a late fee waiver, this is the first time we've ever missed a payment in six years.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "The currency surcharge on this statement wasn't disclosed anywhere at signup and now I'm annoyed.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Payroll runs in fifteen minutes and the corporate card is still showing as declined for our subscription renewal.",
+    "category": "billing",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Genuinely didn't expect the billing support chat to resolve this in under two minutes \u2014 well done.",
+    "category": "billing",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Somebody set up autopay on the wrong card and the payment is scheduled to fail in the next few minutes unless it's changed now.",
+    "category": "billing",
+    "urgency": "urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Single sign-on has been rejecting valid credentials since this morning's identity provider update.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Push notifications arrive anywhere from ten minutes to two hours late, which defeats the point of them.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Would love to rearrange the dashboard widgets if that's something the product supports.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "The plugin we rely on for exports broke after your last platform update and the client presentation starts in five minutes.",
+    "category": "technical_support",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Data export came back corrupted twice in a row now, half the rows are just blank.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Session timeout feels awfully short \u2014 I get logged out mid-task constantly.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Got a monitoring alert about a possible breach but it looks like a false positive \u2014 can someone confirm when they get a chance?",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Real-time collaboration has been lagging badly enough that two of us just edited the same paragraph without noticing.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "High-contrast mode doesn't seem to affect the sidebar at all, only the main panel.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Restoring from backup worked perfectly, honestly smoother than I braced for.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Getting throttled on the API way below the documented rate limit, and it's holding up tonight's batch job that starts in a few minutes.",
+    "category": "technical_support",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "The onboarding tutorial can't be skipped, which is a small thing but mildly maddening on every new hire's first day.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Whole engineering floor just lost VPN access at once, right as the incident bridge is starting.",
+    "category": "technical_support",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Kudos on the new search \u2014 it actually understands typos now.",
+    "category": "technical_support",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Surgery's starting shortly and the anesthesiologist's tablet just lost its connection to the records system.",
+    "category": "technical_support",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Could we discuss a custom SLA before locking in the annual contract?",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Switching from seat-based to usage-based pricing sounds appealing, walk me through how that would work for us.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "We're in a bake-off against two competitors and need your final pricing before the committee reconvenes in half an hour.",
+    "category": "sales",
+    "urgency": "urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Registering in your procurement portal has been a headache, three separate emails and still no login.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Security questionnaire response came back thorough and fast, genuinely appreciated given our timeline.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Not thrilled about the upsell pitch showing up the moment our renewal came due.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Referral partner commission structure \u2014 is that something documented anywhere I can review?",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Just got word we made the RFP shortlist, excited to move forward with the next steps.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Redlines on the contract have been sitting with your legal team for going on three weeks now.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Pilot program scope needs to be finalized before we present to the steering committee, which starts in ten minutes.",
+    "category": "sales",
+    "urgency": "urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Budget freeze on our end means this deal is on pause indefinitely, wanted to let you know directly.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "The rollup billing across our five departments finally has a clean explanation, thank you for walking through it.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Your account exec ghosted us for two weeks and then acted surprised we're talking to other vendors.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "CFO wants the multi-year number on her desk before she leaves for the airport in twenty minutes.",
+    "category": "sales",
+    "urgency": "urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Appreciate you fitting in that extra call on short notice yesterday.",
+    "category": "sales",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Do we need written permission to use your logo in a conference slide deck?",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Inviting someone from your team to speak at our meetup next spring, no rush on a reply.",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Screen reader users on our team say your app's labels are some of the clearest they've encountered.",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Interested in franchise opportunities in our region, is there a packet available?",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Your privacy policy references a data retention period that seems to contradict itself in two places.",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "A reporter is finishing a piece and needs a one-line comment from your team before it goes to print in the next few minutes.",
+    "category": "general_inquiry",
+    "urgency": "urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Vetting your organization for a potential charity partnership, could you send an overview of past collaborations?",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Mail keeps arriving at our old address even after we filed the forwarding request weeks ago.",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Are the terms of service available in Portuguese anywhere?",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Alumni network login hasn't worked since the site redesign, small annoyance but persistent.",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Genuinely impressed by the environmental certification details published on your site.",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  },
+  {
+    "text": "Need to know if the venue allows service animals before I finalize a guest's travel, ideally within the hour.",
+    "category": "general_inquiry",
+    "urgency": "urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "Where would I go to submit a testimonial about our experience working with you?",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "neutral"
+  },
+  {
+    "text": "The graduation ceremony starts shortly and the guest list check-in link you sent isn't loading for anyone at the door.",
+    "category": "general_inquiry",
+    "urgency": "urgent",
+    "sentiment": "negative"
+  },
+  {
+    "text": "Just wanted to pass along that the new office directory page is a huge improvement.",
+    "category": "general_inquiry",
+    "urgency": "not_urgent",
+    "sentiment": "positive"
+  }
+]

@@ -1,11 +1,24 @@
 # jev-local-engine
 
-A local, schema-driven decision engine. It scores free text against any
-caller-supplied schema — a mapping of field names to a list of allowed
-choices — and returns, for every field, the winning choice plus a full
-probability distribution over that field's choices. It runs entirely on
-Apple Silicon (MPS) against `Qwen/Qwen2.5-1.5B-Instruct`, with no network
-calls once the model is cached.
+A local, schema-driven decision engine, plus a faster and more accurate
+trained alternative for its default schema. Both score free text and
+return, per field, a winning choice and a full probability distribution.
+Both run entirely on Apple Silicon (MPS) against
+`Qwen/Qwen2.5-1.5B-Instruct`, with no network calls once the model is
+cached.
+
+- **`jev_local_engine.py`** — the constrained-decoding engine. Accepts any
+  caller-supplied schema (a mapping of field names to allowed choices) with
+  no training required, so it works on a schema no one has trained for.
+  This is the zero-shot path.
+- **`decision_heads.py`** / **`train_heads.py`** — a trained alternative for
+  this project's own `category` / `urgency` / `sentiment` schema. One
+  linear classification head per field, trained on hand-labelled examples
+  over a frozen-encoder feature, so all three fields resolve from a single
+  shared forward pass. Measured faster and more accurate than the engine on
+  every field it was trained for (see **Decision heads** below) — **use it
+  in preference to the engine for this schema.** Fall back to the engine
+  for any other schema, or when there is no trained head available.
 
 The engine never generates text. For every field it reads the model's
 logits at the position that would predict the next token and turns those
@@ -53,6 +66,157 @@ Any schema shape is accepted — one field or many, any choice list per
 field. Selected decisions are validated through a Pydantic model built from
 the schema itself, cached by schema shape, so a repeated schema reuses one
 validation model rather than rebuilding it.
+
+## Decision heads: a faster, more accurate path for this schema
+
+`decision_heads.py` provides a trained alternative to the constrained
+engine for this project's own three-field schema. Instead of one
+constrained-decoding prompt per field, it computes one frozen-encoder
+feature per input (`encode`: the attention-mask-weighted mean of the base
+model's last hidden state, L2-normalized) and reads every field off that
+single feature through its own small `Linear` head
+(`DecisionHeads` — a `torch.nn.ModuleDict` of one head per field). The
+encoder is never fine-tuned; only the heads train. `run_heads_decision`
+returns the same shape `run_jev_decision` does, so the two are directly
+comparable.
+
+`decision_heads.HEADS_SCHEMA` is the heads' own schema: `category` and
+`sentiment` match the engine's `SCHEMA` exactly, but `urgency` is collapsed
+to two choices, `["not_urgent", "urgent"]`, instead of the engine's four
+(see **Why the heads use two-class urgency** below). The engine's own
+`SCHEMA` is untouched.
+
+### Training
+
+Training data is hand-authored, not distilled from the engine — an earlier
+version of this change trained on 432 engine-labelled examples and
+measured that it could not beat the engine it was trained on (0.667
+category / 0.617 sentiment, against the engine's own 0.683 / 0.717 on the
+same holdout — the teacher was a ceiling a distilled student cannot pass).
+`train_heads.py` instead loads `data/train_a.json`, `data/train_b.json`,
+and `data/train_c.json` — 200 hand-labelled examples in varied prose, no
+two sharing a sentence template — and trains against `HEADS_SCHEMA`:
+
+```python
+from decision_heads import DecisionHeads, HEADS_SCHEMA, save_heads
+from train_heads import load_hand_labelled_training_data, train
+
+texts, labels = load_hand_labelled_training_data()
+heads = train(texts, labels, heads=DecisionHeads(HEADS_SCHEMA))
+save_heads(heads, "data/heads.pt")
+```
+
+### Running
+
+```python
+from decision_heads import HEADS_SCHEMA, load_heads, run_heads_decision
+
+heads = load_heads("data/heads.pt", HEADS_SCHEMA)
+result = run_heads_decision(
+    "My account was double charged for last month's subscription, "
+    "fix this immediately!",
+    heads,
+)
+print(result["decisions"])
+```
+
+### Measured accuracy and latency
+
+Scored on `data/holdout_v2.json` (60 hand-labelled items, authored after
+all training data and never used to choose the urgency scheme or any other
+hyperparameter — see the evaluation caveats below for why this is the set
+to trust, and why `data/holdout.json` is not):
+
+| field | heads accuracy | engine accuracy | disagreement |
+|-------|----------------|------------------|--------------|
+| category | 0.8667 | 0.5333 | 25 / 60 |
+| urgency (heads' 2-class scheme; engine's 4-class mapped via `ENGINE_URGENCY_TO_HEADS_URGENCY`) | 0.9167 | 0.8333 | 11 / 60 |
+| sentiment | 0.8500 | 0.8167 | 14 / 60 |
+
+The heads beat the engine on every field measured here. See **Evaluation
+caveats** immediately below before quoting any of these numbers on their
+own — in particular, `urgency`'s 0.9167 needs its minority-class F1 quoted
+alongside it, and the engine's accuracy differs materially between
+holdouts.
+
+Warm latency (`run_heads_decision`, after a warm-up call, `torch.mps.synchronize()`
+around the timed region):
+
+| path | warm latency |
+|------|--------------|
+| heads (`run_heads_decision`) | ~33 ms |
+| engine (`run_jev_decision`, same schema) | ~203 ms |
+
+The heads path is roughly 6x faster and, per the table above, more
+accurate on every field it was trained for. **Use the heads path for this
+project's `category` / `urgency` / `sentiment` schema.** The engine keeps a
+real role outside that: it needs no training data and works on any
+caller-supplied schema, including one no head has ever been trained for,
+so it remains the zero-shot fallback — and the two-class urgency choice
+below means the engine is also the only path that still distinguishes
+`high` from `critical`, if that distinction matters to a caller.
+
+### Evaluation caveats
+
+Three things to keep in mind before quoting any number above as a clean
+result on its own:
+
+- **Urgency's 0.9167 accuracy sits against a 46 not_urgent / 14 urgent
+  class split** in `data/holdout_v2.json`. A model that always predicted
+  `not_urgent` would already score 0.767 by doing nothing useful on the
+  minority class. Quoted alongside the accuracy, the minority-class
+  (`urgent`) F1 is **0.839** (precision 0.765, recall 0.929, 13 true
+  positives, 4 false positives, 1 false negative out of 14 `urgent`
+  items) — high enough to confirm the heads are genuinely detecting the
+  minority class rather than riding the majority, but the F1 is the number
+  that establishes that, not the accuracy alone.
+- **The engine's `category` accuracy is not one number.** It measures
+  0.6833 on the older `data/holdout.json` and 0.5333 on
+  `data/holdout_v2.json` — different holdouts, different results. Neither
+  figure should be quoted as "the engine's accuracy" without naming which
+  set it came from.
+- **`data/holdout.json` is now a validation set, not a clean holdout.** It
+  was used to choose the two-class urgency scheme (see below), which
+  disqualifies it as an unbiased evaluation target — scoring on it after
+  using it to pick a hyperparameter would be contaminated. It also
+  measurably shares authorship patterns with `data/train_a.json`: the
+  closest pair of items across the two files has a word-level Jaccard
+  similarity of 0.75 (both files were hand-authored by the same process,
+  months apart, and some phrasing echoed). Any accuracy figure computed
+  against `data/holdout.json` would be optimistic for that reason alone.
+  `data/holdout_v2.json` — authored last, checked for zero text overlap
+  against every training file and against `data/holdout.json` — is the
+  set to trust.
+
+### Why the heads use two-class urgency
+
+The engine's `urgency` field keeps its original four choices (`low`,
+`medium`, `high`, `critical`) — `jev_local_engine.SCHEMA` is untouched.
+The heads collapse `urgency` to two (`not_urgent`, `urgent`) because
+four-way urgency was measured, not assumed, to be a poor fit for these
+features on a small hand-labelled set:
+
+- Fit to all 60 labels in `data/holdout.json` (full-data training, no
+  held-out split): **1.000 train accuracy** — the head memorizes the
+  training labels perfectly.
+- Held-out generalization on that same 60-item set: 5-fold cross-validation
+  (10 different random fold assignments) measured accuracy between 0.333
+  and 0.550, averaging **0.438**; leave-one-out cross-validation (train on
+  59, predict the 60th, for every item) measured **0.450**. Both are well
+  above the 0.25 chance floor for four roughly-balanced classes, but far
+  below the 1.000 train accuracy — a large train/held-out gap consistent
+  with overfitting a four-way boundary (especially `high` vs. `critical`)
+  that a 60-item set cannot reliably teach.
+
+That gap — not any specific pass/fail threshold — is the basis for
+collapsing urgency to two classes for the heads: `low`/`medium` fold into
+`not_urgent`, `high`/`critical` fold into `urgent`, a boundary the same
+features hold up on far better in practice (0.9167 accuracy on
+`data/holdout_v2.json`, discussed above). The two-class scheme is a
+measured response to a measured generalization gap, not a simplification
+made for convenience — and a caller who genuinely needs the `high`/
+`critical` distinction should use the engine's own four-class `urgency`
+field instead of the heads.
 
 ## Tests
 
