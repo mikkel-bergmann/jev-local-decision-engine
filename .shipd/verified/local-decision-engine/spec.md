@@ -1,4 +1,4 @@
-## ADDED Requirements
+# local-decision-engine
 
 ### Requirement: Reproducible Apple Silicon environment
 id: env-bootstrap
@@ -31,13 +31,21 @@ The system SHALL NOT pass `device_map="mps"`, which does not complete on this to
 ### Requirement: Candidate token ids resolve without collision
 id: candidate-resolution
 
-The system SHALL map each schema choice to the first token id of its space-prefixed form.
-If two choices within one field resolve to the same first token id, then the system SHALL
-raise an error naming both colliding choices and the shared id.
+The system SHALL map each schema choice to the first token id of the form that matches the
+prompt's final token boundary: the bare form where the prompt ends in a newline, and the
+space-prefixed form where it ends mid-line. The system SHALL NOT strip the trailing newline
+that terminates a chat-template generation prompt. If two choices within one field resolve to
+the same first token id, then the system SHALL raise an error naming both colliding choices
+and the shared id.
 
 #### Scenario: Distinct choices resolve to distinct ids
 - **WHEN** the engine resolves candidates for the `urgency` choices `low`, `medium`, `high`, `critical`
 - **THEN** it returns four distinct token ids and raises nothing
+
+#### Scenario: Candidate form matches the prompt boundary
+- **WHEN** the engine builds a field prompt through the chat template with a generation prompt
+- **THEN** the prompt retains its terminating newline, and the candidate ids scored at that position
+  are the bare-form first token ids rather than the space-prefixed ones
 
 #### Scenario: Colliding choices fail loudly
 - **WHEN** the engine resolves candidates for a field holding two choices that share a first token id
@@ -74,6 +82,30 @@ field's choices. The system SHALL NOT apply softmax to an individual scalar logi
   thank-you note
 - **THEN** the two inputs do not yield identical decisions across all three fields
 
+### Requirement: Candidates score by length-normalized full-sequence likelihood
+id: full-sequence-scoring
+
+The system SHALL score each candidate by the mean per-token log-probability of its complete
+token sequence continuing the field prompt, not by its first token alone. The system SHALL
+obtain every field's every candidate from a single additional batched forward pass, and SHALL
+convert the per-candidate mean log-probabilities of one field into probabilities by softmax
+across that field's candidates.
+
+#### Scenario: Multi-token choices compete on equal footing
+- **WHEN** the engine scores the `category` field on a message with no technical-support content,
+  such as a calm thank-you note
+- **THEN** `technical_support` is not selected purely on its first token's prior, and its
+  probability is below the probability it receives under first-token scoring
+
+#### Scenario: Scoring uses one additional batched pass
+- **WHEN** the engine scores a schema whose fields hold eleven candidates in total
+- **THEN** the candidate-scoring stage executes exactly one forward pass covering all eleven
+  candidate continuations, not one pass per candidate
+
+#### Scenario: Per-field probabilities still normalize
+- **WHEN** the engine scores any field under full-sequence scoring
+- **THEN** that field's probabilities sum to 1.0 within a tolerance of 0.001
+
 ### Requirement: Output is schema-validated JSON with a latency figure
 id: schema-validated-output
 
@@ -93,9 +125,12 @@ only, excluding model load.
 ### Requirement: Benchmark reports latency and resident memory
 id: benchmark-report
 
-The system SHALL report scoring latency in milliseconds and the process resident set size in
-gigabytes after the model is loaded, so both can be checked against the sub-500 ms and 3-4 GB
-targets.
+The system SHALL report scoring latency in milliseconds and the process **current** resident set
+size in gigabytes after the model is loaded, so both can be checked against the latency and 3-4 GB
+targets. The latency budget for the full-sequence scoring path is **under 1000 ms**, measured
+warm: the second batched pass over every candidate continuation costs roughly 3.5x the
+first-token path, which the change accepts in exchange for length-normalized candidate scores. The system SHALL NOT report peak resident size in place of current, since peak
+includes transient load-time buffers and overstates the steady-state footprint.
 
 #### Scenario: A run prints both figures
 - **WHEN** a user runs the engine on the test input

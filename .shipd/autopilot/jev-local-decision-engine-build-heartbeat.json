@@ -1,0 +1,10 @@
+{
+  "kind": "build",
+  "location": "/Users/mikkelbergmann/projects/jevtest/.worktrees/jev-local-decision-engine",
+  "seq": 2,
+  "session_id": "06ffc6f8-ddf3-45cd-ba2a-4dcc1af6cb1d",
+  "slug": "jev-local-decision-engine",
+  "stage": "merge",
+  "state": "running",
+  "updated_at": 1789866289.125157
+}
