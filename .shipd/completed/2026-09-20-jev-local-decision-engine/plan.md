@@ -1,5 +1,5 @@
 # jev-local-decision-engine
-Status: ready
+Status: verified
 
 ## Idea
 
@@ -69,7 +69,15 @@ repo root; no existing code to modify. One ~3.1 GB model download into
   Verified: a 3-prompt batch produced `input_ids (3, 14)` and `logits[:, -1, :] (3, 1000)`.
   Rejected: reading several slots from one shared sequence — causal attention makes each
   later field's readout depend on whatever filler occupies the earlier slots, which biases it.
-- **Score the first token of the space-prefixed choice.** Verified against the real Qwen2.5
+- **Score the first token of the form matching the prompt boundary.** The chat template's
+  generation prompt ends in a newline, so the model's next token is the **bare** form
+  (`billing`=38637), not the space-prefixed one. Verified: stripping that newline leaves the
+  prompt ending on the literal token `assistant`, where the model's next-token mass goes to
+  `\n` rather than any class word — measured against the real model, that corruption reported
+  the complaint "My account was double charged ... fix this immediately!" as urgency `medium`
+  / sentiment `neutral`, where the intact template reports `critical` (0.884) and `negative`
+  (0.9999). Never rstrip a generation prompt.
+- **Collision-freedom of the space-prefixed forms (superseded detail).** Verified against the real Qwen2.5
   vocabulary: first-token ids are distinct within every field, `COLLISION=False` for all six
   bare and space-prefixed variants. Space-prefixed ids differ from bare ones (` low`=3347 vs
   `low`=10303), so the prompt must end without trailing whitespace. `technical_support` and
@@ -77,6 +85,12 @@ repo root; no existing code to modify. One ~3.1 GB model download into
   their first tokens (`technical`, `general`) are unambiguous.
 - **Apply the tokenizer chat template.** `tokenizer.chat_template is not None` returned
   `True`; the draft fed a raw string, prompting the instruct-tuned model off-distribution.
+
+- **Full-sequence scoring costs latency and bought little accuracy.** Measured warm: 704-815 ms
+  against 203 ms for first-token, while `technical_support` on a calm thank-you fell only from
+  0.999993 to 0.9887, and on the billing complaint from 0.9282 to 0.9194. The user accepted the
+  slower path for its length-normalized scores; the residual bias is therefore NOT a
+  tokenization artifact and is tracked as separate work, not as a defect of this change.
 
 **Risks and trade-offs.**
 
