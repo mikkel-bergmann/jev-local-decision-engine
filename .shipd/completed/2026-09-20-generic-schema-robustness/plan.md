@@ -1,5 +1,5 @@
 # generic-schema-robustness
-Status: ready
+Status: verified
 
 ## Idea
 

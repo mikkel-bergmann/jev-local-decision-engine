@@ -5,9 +5,11 @@ import torch
 from jev_local_engine import (
     SCHEMA,
     IntentDecision,
+    build_decision_model,
     build_field_prompts,
     candidate_probabilities,
     resolve_candidates,
+    run_jev_decision,
     score_fields,
     score_fields_full_sequence,
 )
@@ -145,3 +147,50 @@ def test_full_sequence_scoring_probabilities_normalize(qwen_model_and_tokenizer)
     for field, probabilities in result.items():
         total = sum(probabilities.values())
         assert abs(total - 1.0) < 0.001, f"{field} probabilities sum to {total}, not 1.0"
+
+
+@pytest.mark.requires_model
+def test_run_jev_decision_scores_a_non_default_schema(qwen_model_and_tokenizer):
+    # `run_jev_decision` currently validates every result through the hardcoded
+    # IntentDecision model, so any schema other than the default three fields
+    # raises three `missing` field errors before this task's fix lands.
+    tool_schema = {"tool": ["web_search", "calculator", "calendar", "clarify"]}
+
+    result = run_jev_decision("What is the weather like today?", tool_schema)
+
+    assert "tool" in result["decisions"]
+    tool_result = result["decisions"]["tool"]
+    assert tool_result["decision"] in tool_schema["tool"]
+    assert set(tool_result["probabilities"].keys()) == set(tool_schema["tool"])
+
+
+def test_build_decision_model_rejects_off_schema_value():
+    tool_schema = {"tool": ["web_search", "calculator", "calendar", "clarify"]}
+    DecisionModel = build_decision_model(tool_schema)
+
+    with pytest.raises(pydantic.ValidationError):
+        DecisionModel(tool="not_a_tool")
+
+
+@pytest.mark.requires_model
+def test_run_jev_decision_default_schema_shape_unchanged(qwen_model_and_tokenizer):
+    text = "My account was double charged for last month's subscription, fix this immediately!"
+
+    result = run_jev_decision(text, SCHEMA)
+
+    assert set(result["decisions"].keys()) == {"category", "urgency", "sentiment"}
+    for field, choices in SCHEMA.items():
+        field_result = result["decisions"][field]
+        assert field_result["decision"] in choices
+        assert set(field_result["probabilities"].keys()) == set(choices)
+    assert isinstance(result["latency_ms"], float)
+
+
+@pytest.mark.requires_model
+def test_run_jev_decision_warm_latency_below_500ms(qwen_model_and_tokenizer):
+    text = "My account was double charged for last month's subscription, fix this immediately!"
+
+    run_jev_decision(text, SCHEMA)  # warm-up call, excluded from the assertion
+    warm_result = run_jev_decision(text, SCHEMA)
+
+    assert warm_result["latency_ms"] < 500

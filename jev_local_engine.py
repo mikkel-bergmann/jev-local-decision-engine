@@ -7,7 +7,7 @@ import time
 from typing import Literal
 
 import torch
-from pydantic import BaseModel
+from pydantic import BaseModel, create_model
 
 MODEL_NAME = "Qwen/Qwen2.5-1.5B-Instruct"
 
@@ -25,6 +25,27 @@ class IntentDecision(BaseModel):
 
 
 _model_cache = {}
+_decision_model_cache = {}
+
+
+def build_decision_model(schema):
+    """Build (or reuse) a Pydantic model validating decisions for `schema`.
+
+    The model's fields are the schema's keys, each typed as a `Literal` over
+    that field's own choices, built with `pydantic.create_model`. Cached on a
+    key derived from the schema's items so a repeated schema reuses one
+    class rather than rebuilding it on every call.
+    """
+    cache_key = tuple((field, tuple(choices)) for field, choices in schema.items())
+    if cache_key not in _decision_model_cache:
+        field_definitions = {
+            field: (Literal.__getitem__(tuple(choices)), ...)
+            for field, choices in schema.items()
+        }
+        _decision_model_cache[cache_key] = create_model(
+            "DynamicDecision", **field_definitions
+        )
+    return _decision_model_cache[cache_key]
 
 
 def _get_model_and_tokenizer():
@@ -45,7 +66,7 @@ def run_jev_decision(text, schema):
     model, tokenizer = _get_model_and_tokenizer()
 
     start = time.perf_counter()
-    field_probabilities = score_fields_full_sequence(model, tokenizer, text, schema)
+    field_probabilities = score_fields(model, tokenizer, text, schema)
     latency_ms = (time.perf_counter() - start) * 1000
 
     decisions = {}
@@ -53,9 +74,11 @@ def run_jev_decision(text, schema):
         best_choice = max(probabilities, key=probabilities.get)
         decisions[field] = {"decision": best_choice, "probabilities": probabilities}
 
-    # Validate the selected decisions through the Pydantic schema; raises on
-    # an off-schema value rather than accepting it.
-    IntentDecision(**{field: value["decision"] for field, value in decisions.items()})
+    # Validate the selected decisions through a Pydantic model built for this
+    # schema's own fields and choices; raises on an off-schema value rather
+    # than accepting it.
+    decision_model = build_decision_model(schema)
+    decision_model(**{field: value["decision"] for field, value in decisions.items()})
 
     return {"decisions": decisions, "latency_ms": latency_ms}
 
