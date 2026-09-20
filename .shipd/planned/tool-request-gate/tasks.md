@@ -95,5 +95,5 @@
       negatives moved the genuine-request retention rate. A gate that now rejects narrative text may
       also start rejecting real incident-logging requests such as "log that the freezer failed
       overnight" — test that exact phrasing and report it.
-- [~] 7.5 [req: *] Re-run the full suite in two separate processes and confirm green both times.
+- [x] 7.5 [req: *] Re-run the full suite in two separate processes and confirm green both times.
 
