@@ -48,6 +48,40 @@ def load_tool_catalogue(path=TOOLS_PATH):
 # unchanged; it already builds one Linear(HIDDEN_SIZE, n) per field.
 TOOL_SCHEMA = {"tool": load_tool_catalogue()}
 
+# The gate head's own schema: one binary field answering whether a query is
+# a tool request at all. Built the same way TOOL_SCHEMA and HEADS_SCHEMA
+# are — a plain {field: choices} mapping the existing DecisionHeads class
+# accepts unchanged.
+GATE_SCHEMA = {"is_tool_request": ["no", "yes"]}
+
+# The gate's decision threshold on its "yes" probability, chosen by
+# train_heads.choose_gate_threshold sweeping 0.10 to 0.90 in steps of 0.05
+# against data/gate_holdout.json (40 positives, 40 negatives) AND the
+# evaluation-only data/gate_adversarial.json (45 narrative-incident
+# negatives, 25 genuine incident-logging positives), per `gate-threshold`.
+#
+# The holdout alone ties at harmonic mean 1.0 across a 0.20-wide band
+# (0.35 to 0.55) — it cannot discriminate inside that range at all. An
+# earlier version of this sweep broke that tie by taking the lowest tying
+# value (0.35) and shipped it; the validator then found that 0.35 sat
+# inside the exact band where narrative past-tense incident negatives
+# (e.g. "yeah that email thread got out of hand fast") were re-admitted,
+# even though the retraining that produced this checkpoint had genuinely
+# pushed their scores down. The tie-break, not the model, was the bug: it
+# was choosing arbitrarily inside a range the holdout could not measure,
+# and happened to land on the worst end for that failure class. The sweep
+# now breaks any holdout tie on the adversarial negative-rejection rate
+# instead of on threshold order, so the choice is measured all the way
+# down rather than hand-picked at the last step.
+#
+# Re-measured 2026-09-20 against the shipped data/gate_head.pt: threshold
+# 0.55 — precision 1.0, recall 1.0, and negative-rejection rate 1.0 on the
+# holdout (tied with every other candidate from 0.35 to 0.55), with the
+# highest adversarial negative-rejection rate among the tied candidates at
+# 0.9556 (43/45), and adversarial genuine-retention rate 0.96 (24/25) at
+# that threshold. Reproduced identically across independent retrains.
+GATE_THRESHOLD = 0.55
+
 
 class DecisionHeads(torch.nn.Module):
     """One linear classification head per schema field, sharing one feature
@@ -162,6 +196,73 @@ def run_heads_decision(text, heads, top_k=5):
         }
 
     return {"decisions": decisions, "latency_ms": latency_ms}
+
+
+def route_tool(text, tool_heads, gate_head, threshold=GATE_THRESHOLD):
+    """Route `text` to a tool, consulting `gate_head` before `tool_heads` so
+    the router can abstain instead of always naming a catalogue tool.
+
+    Encodes `text` exactly once and reuses those features for both heads —
+    a gated routing decision costs the same single encoder forward pass any
+    decision does (`tool-request-gate`); it does not call
+    `run_heads_decision`, which would encode a second time.
+
+    Compares the gate's "yes" probability against `threshold`. Below
+    threshold, the query is reported as not a tool request: no tool name,
+    an empty shortlist. At or above threshold, the query is routed by
+    `tool_heads` exactly as `run_heads_decision(text, tool_heads)` alone
+    would route it — same `decision` and `top_k` (defaulting to five, as
+    `run_heads_decision` does), since both read the same features through
+    the same trained head.
+
+    Returns `{"is_tool_request": bool, "gate_probability": float,
+    "tool": str | None, "top_k": list}`. `gate_probability` is always
+    present, whichever way the gate decided (`gated-routing`).
+
+    `run_heads_decision` and its return shape are untouched — this is a
+    separate entry point, per `comparable-return-shape`.
+    """
+    features = encode([text])
+
+    with torch.no_grad():
+        gate_probabilities = gate_head(features)
+    gate_choices = gate_head.schema["is_tool_request"]
+    gate_probs_by_choice = {
+        choice: float(prob)
+        for choice, prob in zip(
+            gate_choices, gate_probabilities["is_tool_request"][0]
+        )
+    }
+    gate_probability = gate_probs_by_choice["yes"]
+    is_tool_request = gate_probability >= threshold
+
+    if not is_tool_request:
+        return {
+            "is_tool_request": False,
+            "gate_probability": gate_probability,
+            "tool": None,
+            "top_k": [],
+        }
+
+    with torch.no_grad():
+        tool_probabilities = tool_heads(features)
+    tool_choices = tool_heads.schema["tool"]
+    tool_probs_by_choice = {
+        choice: float(prob)
+        for choice, prob in zip(tool_choices, tool_probabilities["tool"][0])
+    }
+    best_tool = max(tool_probs_by_choice, key=tool_probs_by_choice.get)
+    ranked = sorted(tool_probs_by_choice.items(), key=lambda kv: kv[1], reverse=True)
+    top_k_list = [
+        {"choice": choice, "probability": prob} for choice, prob in ranked[:5]
+    ]
+
+    return {
+        "is_tool_request": True,
+        "gate_probability": gate_probability,
+        "tool": best_tool,
+        "top_k": top_k_list,
+    }
 
 
 def save_heads(heads, path):

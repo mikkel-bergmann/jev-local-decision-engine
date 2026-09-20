@@ -1,0 +1,22 @@
+[
+{"text":"do a walk round and make sure nothing is out of place before someone official turns up","tool":"audit_checklist_run"},
+{"text":"can you run the internal check so we know where we stand","tool":"audit_checklist_run"},
+{"text":"I want a self assessment done on the floor today","tool":"audit_checklist_run"},
+{"text":"spot check everything against our standards this morning","tool":"audit_checklist_run"},
+{"text":"book the environmental health visit for the spring","tool":"health_inspection_schedule"},
+{"text":"we need the officer booked in before the quarter closes","tool":"health_inspection_schedule"},
+{"text":"arrange for them to come out and look at the kitchen","tool":"health_inspection_schedule"},
+{"text":"get the statutory visit on the diary","tool":"health_inspection_schedule"},
+{"text":"type up what came out of the visit this morning","tool":"health_inspection_report"},
+{"text":"I need the paperwork from when they came round","tool":"health_inspection_report"},
+{"text":"summarise the officer findings for head office","tool":"health_inspection_report"},
+{"text":"put together the write up from the visit","tool":"health_inspection_report"},
+{"text":"record the breach they picked up on","tool":"health_violation_log"},
+{"text":"we got pulled up on the handwash station, log it","tool":"health_violation_log"},
+{"text":"make a note of what failed during the check","tool":"health_violation_log"},
+{"text":"enter the non conformance from this morning","tool":"health_violation_log"},
+{"text":"put the next internal review in the diary","tool":"audit_schedule_create"},
+{"text":"when should we do our own walkthrough, book it","tool":"audit_schedule_create"},
+{"text":"diarise the quarterly self check","tool":"audit_schedule_create"},
+{"text":"schedule our own look round for next month","tool":"audit_schedule_create"}
+]

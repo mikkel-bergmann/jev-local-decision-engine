@@ -12,7 +12,19 @@ TOOL_TRAIN_PATHS = [
     os.path.join("data", "tool_train_a.json"),
     os.path.join("data", "tool_train_b.json"),
     os.path.join("data", "tool_train_c.json"),
+    os.path.join("data", "tool_train_d.json"),
 ]
+
+# The twenty hand-authored inspection queries in data/tool_train_d.json,
+# covering the audit checklist, inspection scheduling, inspection
+# reporting, violation logging, and audit scheduling tools.
+INSPECTION_TOOLS = {
+    "audit_checklist_run",
+    "health_inspection_schedule",
+    "health_inspection_report",
+    "health_violation_log",
+    "audit_schedule_create",
+}
 
 TOOL_HOLDOUT_PATH = os.path.join("data", "tool_holdout.json")
 
@@ -161,6 +173,25 @@ def test_every_tool_has_a_query_sharing_no_word_with_its_name():
         assert any(
             tool_words.isdisjoint(words_in(text)) for text in texts
         ), f"every training query for {tool} shares a word with its name"
+
+
+def test_inspection_queries_are_loaded_with_sufficient_coverage():
+    with open(os.path.join("data", "tool_train_d.json")) as f:
+        inspection_items = json.load(f)
+
+    assert len(inspection_items) == 20
+    assert {item["tool"] for item in inspection_items} == INSPECTION_TOOLS
+
+    inspection_texts = {item["text"] for item in inspection_items}
+    loaded_texts = {item["text"] for item in load_tool_training_items()}
+    assert inspection_texts.issubset(loaded_texts), (
+        "the inspection queries in tool_train_d.json are not present in the "
+        "loaded tool training data"
+    )
+
+    counts = collections.Counter(item["tool"] for item in load_tool_training_items())
+    for tool in INSPECTION_TOOLS:
+        assert counts[tool] >= 4, f"{tool} has only {counts[tool]} training queries"
 
 
 def test_holdout_is_disjoint_from_every_training_file():
