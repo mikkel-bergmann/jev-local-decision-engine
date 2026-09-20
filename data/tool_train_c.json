@@ -1,0 +1,145 @@
+[
+  {"text": "we found a hole in the payment network, get it patched", "tool": "pci_vulnerability_remediate"},
+  {"text": "pci vulnerability remediate the finding from the last scan", "tool": "pci_vulnerability_remediate"},
+  {"text": "fix the security gap the scanner flagged before it reopens", "tool": "pci_vulnerability_remediate"},
+
+  {"text": "log today's kitchen safety checks", "tool": "haccp_checklist_submit"},
+  {"text": "haccp checklist submit for the morning shift", "tool": "haccp_checklist_submit"},
+  {"text": "turn in today's food safety walkthrough", "tool": "haccp_checklist_submit"},
+
+  {"text": "set up a new daily safety check sheet for the fryer station", "tool": "haccp_checklist_create"},
+  {"text": "haccp checklist create for the new cold-storage procedure", "tool": "haccp_checklist_create"},
+  {"text": "build out a check sheet template for the weekend crew to use", "tool": "haccp_checklist_create"},
+
+  {"text": "note what we did to fix the temperature issue from this morning", "tool": "haccp_corrective_action_log"},
+  {"text": "haccp corrective action log for the undercooked chicken incident", "tool": "haccp_corrective_action_log"},
+  {"text": "record how we resolved yesterday's food safety flag", "tool": "haccp_corrective_action_log"},
+
+  {"text": "go back over last month's safety records", "tool": "haccp_log_review"},
+  {"text": "haccp log review for the last 30 days", "tool": "haccp_log_review"},
+  {"text": "check whether anyone missed filling out their checks this week", "tool": "haccp_log_review"},
+
+  {"text": "revise our critical control points now that we added a new fryer", "tool": "haccp_plan_update"},
+  {"text": "haccp plan update after the menu change", "tool": "haccp_plan_update"},
+  {"text": "we need to rewrite our food safety procedures for the new equipment", "tool": "haccp_plan_update"},
+
+  {"text": "flag that the walk-in was left open overnight", "tool": "haccp_violation_report"},
+  {"text": "haccp violation report for the cross-contamination incident", "tool": "haccp_violation_report"},
+  {"text": "file a formal write-up, someone skipped the handwashing step", "tool": "haccp_violation_report"},
+
+  {"text": "pull up the fridge readings from last night", "tool": "temp_log_fetch"},
+  {"text": "temp log fetch for walk-in cooler #2", "tool": "temp_log_fetch"},
+  {"text": "show me the freezer numbers from the past week", "tool": "temp_log_fetch"},
+
+  {"text": "record that the walk-in is reading 38 degrees right now", "tool": "temp_log_submit"},
+  {"text": "temp log submit for the prep cooler", "tool": "temp_log_submit"},
+  {"text": "jot down the current reading on the meat case", "tool": "temp_log_submit"},
+
+  {"text": "yeah I saw the freezer warning, dismiss it", "tool": "temp_alert_ack"},
+  {"text": "temp alert ack for the walk-in cooler", "tool": "temp_alert_ack"},
+  {"text": "confirm we're aware of that fridge alarm", "tool": "temp_alert_ack"},
+
+  {"text": "the fridge thermometer seems off, get it recalibrated", "tool": "temp_sensor_calibrate"},
+  {"text": "temp sensor calibrate for probe #3", "tool": "temp_sensor_calibrate"},
+  {"text": "make sure the cooler's reading gear is accurate", "tool": "temp_sensor_calibrate"},
+
+  {"text": "change the point where the freezer sends a warning", "tool": "temp_threshold_update"},
+  {"text": "temp threshold update: alert if the cooler goes above 40", "tool": "temp_threshold_update"},
+  {"text": "adjust the trigger level for the walk-in alarms", "tool": "temp_threshold_update"},
+
+  {"text": "put together a written summary of last week's inspection", "tool": "audit_report_generate"},
+  {"text": "audit report generate for the March walkthrough", "tool": "audit_report_generate"},
+  {"text": "draft up the findings document from our internal review", "tool": "audit_report_generate"},
+
+  {"text": "set a date for our next internal review", "tool": "audit_schedule_create"},
+  {"text": "audit schedule create for Q2", "tool": "audit_schedule_create"},
+  {"text": "pencil in the store walkthrough for next Tuesday", "tool": "audit_schedule_create"},
+
+  {"text": "we fixed the issue from the last review, mark it resolved", "tool": "audit_finding_close"},
+  {"text": "audit finding close for item #12", "tool": "audit_finding_close"},
+  {"text": "that flagged item from the walkthrough is taken care of now", "tool": "audit_finding_close"},
+
+  {"text": "walk through the store and check off every item on the list", "tool": "audit_checklist_run"},
+  {"text": "audit checklist run for the front-of-house area", "tool": "audit_checklist_run"},
+  {"text": "go do the internal review walkthrough right now", "tool": "audit_checklist_run"},
+
+  {"text": "show me every review we've done this year", "tool": "audit_history_fetch"},
+  {"text": "audit history fetch for the last four quarters", "tool": "audit_history_fetch"},
+  {"text": "pull up past walkthrough records for this location", "tool": "audit_history_fetch"},
+
+  {"text": "we added a new sauce, update what it contains for nuts and dairy", "tool": "allergen_matrix_update"},
+  {"text": "allergen matrix update after the menu refresh", "tool": "allergen_matrix_update"},
+  {"text": "revise the chart showing which dishes have gluten", "tool": "allergen_matrix_update"},
+
+  {"text": "print a tag showing what's in the new sandwich", "tool": "allergen_label_generate"},
+  {"text": "allergen label generate for the seasonal soup", "tool": "allergen_label_generate"},
+  {"text": "make a printable sticker listing what's in this item", "tool": "allergen_label_generate"},
+
+  {"text": "a customer says they had a reaction after eating here", "tool": "allergen_incident_report"},
+  {"text": "allergen incident report for the peanut exposure this afternoon", "tool": "allergen_incident_report"},
+  {"text": "file a report, someone got sick from cross-contact with shellfish", "tool": "allergen_incident_report"},
+
+  {"text": "write up what the inspector found during their visit", "tool": "health_inspection_report"},
+  {"text": "health inspection report for last Tuesday's visit", "tool": "health_inspection_report"},
+  {"text": "document the results of today's county inspection", "tool": "health_inspection_report"},
+
+  {"text": "the county wants to come by next month, get that on the calendar", "tool": "health_inspection_schedule"},
+  {"text": "health inspection schedule for the downtown location", "tool": "health_inspection_schedule"},
+  {"text": "set up a date for the annual visit from the health department", "tool": "health_inspection_schedule"},
+
+  {"text": "keep track of that citation we got for the leaky sink", "tool": "health_violation_log"},
+  {"text": "health violation log entry for the expired-food finding", "tool": "health_violation_log"},
+  {"text": "note down the deficiency the inspector flagged", "tool": "health_violation_log"},
+
+  {"text": "warn every location that the lettuce shipment might be bad", "tool": "food_recall_notice_send"},
+  {"text": "food recall notice send for batch #A4471", "tool": "food_recall_notice_send"},
+  {"text": "get the word out that we're pulling a tainted product", "tool": "food_recall_notice_send"},
+
+  {"text": "note how much of the fish we had to throw out today", "tool": "food_waste_log"},
+  {"text": "food waste log for the dinner shift", "tool": "food_waste_log"},
+  {"text": "record what got tossed at closing", "tool": "food_waste_log"},
+
+  {"text": "make sure our produce vendor's paperwork is still good", "tool": "supplier_certificate_verify"},
+  {"text": "supplier certificate verify for the seafood distributor", "tool": "supplier_certificate_verify"},
+  {"text": "check that our meat vendor hasn't let their credentials lapse", "tool": "supplier_certificate_verify"},
+
+  {"text": "check the truck that just showed up before we accept it", "tool": "supplier_delivery_inspect"},
+  {"text": "supplier delivery inspect for this morning's produce order", "tool": "supplier_delivery_inspect"},
+  {"text": "look over what just arrived before signing for it", "tool": "supplier_delivery_inspect"},
+
+  {"text": "turn in today's cleaning records", "tool": "sanitation_log_submit"},
+  {"text": "sanitation log submit for the closing shift", "tool": "sanitation_log_submit"},
+  {"text": "file the dishwashing and surface-cleaning notes for tonight", "tool": "sanitation_log_submit"},
+
+  {"text": "set up a rotation for who deep-cleans the grill each week", "tool": "sanitation_schedule_create"},
+  {"text": "sanitation schedule create for the back-of-house", "tool": "sanitation_schedule_create"},
+  {"text": "build out a weekly deep-clean rotation for the crew", "tool": "sanitation_schedule_create"},
+
+  {"text": "note that the exterminator came by today", "tool": "pest_control_log"},
+  {"text": "pest control log entry for the monthly visit", "tool": "pest_control_log"},
+  {"text": "record what the bug guy found and treated", "tool": "pest_control_log"},
+
+  {"text": "make sure the new hire's food handler card is actually valid", "tool": "employee_food_safety_cert_verify"},
+  {"text": "employee food safety cert verify for the new cook", "tool": "employee_food_safety_cert_verify"},
+  {"text": "double-check that everyone's handler credentials haven't expired", "tool": "employee_food_safety_cert_verify"},
+
+  {"text": "the delivery truck's fridge died in transit, flag it", "tool": "cold_chain_breach_report"},
+  {"text": "cold chain breach report for the frozen shipment", "tool": "cold_chain_breach_report"},
+  {"text": "something in the frozen shipment warmed up before it got here, log it", "tool": "cold_chain_breach_report"},
+
+  {"text": "turn in the closing duties sheet", "tool": "cleaning_checklist_submit"},
+  {"text": "cleaning checklist submit for tonight's shift", "tool": "cleaning_checklist_submit"},
+  {"text": "file the end-of-night tidy-up list", "tool": "cleaning_checklist_submit"},
+
+  {"text": "figure out which locations got that bad batch of chicken", "tool": "recall_traceability_lookup"},
+  {"text": "recall traceability lookup for lot #B2291", "tool": "recall_traceability_lookup"},
+  {"text": "trace where this ingredient shipment ended up going", "tool": "recall_traceability_lookup"},
+
+  {"text": "someone slipped in the kitchen, write it up", "tool": "incident_report_file"},
+  {"text": "incident report file for the burn injury on the line", "tool": "incident_report_file"},
+  {"text": "document what happened when the freezer door hit an employee", "tool": "incident_report_file"},
+
+  {"text": "mark that Maria finished her food handler course", "tool": "training_completion_log"},
+  {"text": "training completion log for the new safety course", "tool": "training_completion_log"},
+  {"text": "record who's done with onboarding certification this month", "tool": "training_completion_log"}
+]

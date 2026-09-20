@@ -1,0 +1,149 @@
+[
+  {"text": "open a support case for this customer complaint", "tool": "zendesk_ticket_create"},
+  {"text": "zendesk ticket create for the login issue", "tool": "zendesk_ticket_create"},
+  {"text": "log a new case for the guy who can't reset his password", "tool": "zendesk_ticket_create"},
+
+  {"text": "mark that support case as resolved", "tool": "zendesk_ticket_close"},
+  {"text": "zendesk ticket close #8821", "tool": "zendesk_ticket_close"},
+  {"text": "we're done with that customer's issue, wrap it up", "tool": "zendesk_ticket_close"},
+
+  {"text": "spin up a new server for the staging environment", "tool": "aws_ec2_launch"},
+  {"text": "aws ec2 launch a t3.medium instance", "tool": "aws_ec2_launch"},
+  {"text": "get another virtual machine running in us-east-1", "tool": "aws_ec2_launch"},
+
+  {"text": "put this backup file into cloud storage", "tool": "aws_s3_upload"},
+  {"text": "aws s3 upload the nightly export to the archive bucket", "tool": "aws_s3_upload"},
+  {"text": "send these images up to our storage bucket", "tool": "aws_s3_upload"},
+
+  {"text": "trigger that serverless function manually", "tool": "aws_lambda_invoke"},
+  {"text": "aws lambda invoke the image-resizer function", "tool": "aws_lambda_invoke"},
+  {"text": "run the background job that processes uploads", "tool": "aws_lambda_invoke"},
+
+  {"text": "point this subdomain at our new server", "tool": "dns_record_create"},
+  {"text": "dns record create: A record for api.example.com", "tool": "dns_record_create"},
+  {"text": "add a new entry so mail.example.com resolves correctly", "tool": "dns_record_create"},
+
+  {"text": "remove that old subdomain, we don't use it anymore", "tool": "dns_record_delete"},
+  {"text": "dns record delete for staging.example.com", "tool": "dns_record_delete"},
+  {"text": "take down the entry pointing to the decommissioned server", "tool": "dns_record_delete"},
+
+  {"text": "check how our domain is currently configured", "tool": "dns_zone_lookup"},
+  {"text": "dns zone lookup for example.com", "tool": "dns_zone_lookup"},
+  {"text": "show me every entry set up under our domain", "tool": "dns_zone_lookup"},
+
+  {"text": "pull all orders placed in the last 24 hours", "tool": "database_query_run"},
+  {"text": "database query run: select count from users table", "tool": "database_query_run"},
+  {"text": "get me a count of how many accounts signed up this week", "tool": "database_query_run"},
+
+  {"text": "make a snapshot of the production database", "tool": "database_backup_create"},
+  {"text": "database backup create before we run the migration", "tool": "database_backup_create"},
+  {"text": "save a copy of everything before we touch the schema", "tool": "database_backup_create"},
+
+  {"text": "start a new sheet to track the Q4 budget", "tool": "spreadsheet_create"},
+  {"text": "spreadsheet create for the inventory count", "tool": "spreadsheet_create"},
+  {"text": "set up a blank workbook for the expense tracker", "tool": "spreadsheet_create"},
+
+  {"text": "add this month's numbers to the tracking sheet", "tool": "spreadsheet_update"},
+  {"text": "spreadsheet update: append new rows to the budget file", "tool": "spreadsheet_update"},
+  {"text": "fill in the latest sales figures on the shared sheet", "tool": "spreadsheet_update"},
+
+  {"text": "save that sheet as a CSV I can email out", "tool": "spreadsheet_export"},
+  {"text": "spreadsheet export to PDF for the board meeting", "tool": "spreadsheet_export"},
+  {"text": "get me a downloadable copy of the budget workbook", "tool": "spreadsheet_export"},
+
+  {"text": "turn this report into a printable document", "tool": "pdf_generate"},
+  {"text": "pdf generate from the quarterly summary", "tool": "pdf_generate"},
+  {"text": "create a signable document version of the contract", "tool": "pdf_generate"},
+
+  {"text": "combine these three documents into one file", "tool": "pdf_merge"},
+  {"text": "pdf merge the invoice and the receipt", "tool": "pdf_merge"},
+  {"text": "stitch the scanned pages together into a single file", "tool": "pdf_merge"},
+
+  {"text": "pull the wording out of that scanned contract", "tool": "pdf_extract_text"},
+  {"text": "pdf extract text from the signed agreement", "tool": "pdf_extract_text"},
+  {"text": "get the wording out of this document so I can search it", "tool": "pdf_extract_text"},
+
+  {"text": "what does this sentence mean in English", "tool": "translate_text"},
+  {"text": "translate text: 'bonjour, comment allez-vous'", "tool": "translate_text"},
+  {"text": "convert this paragraph from Spanish for me", "tool": "translate_text"},
+
+  {"text": "is it going to rain tomorrow", "tool": "weather_lookup"},
+  {"text": "weather lookup for Chicago this weekend", "tool": "weather_lookup"},
+  {"text": "what's the forecast looking like for the outdoor event", "tool": "weather_lookup"},
+
+  {"text": "text the driver that the order is ready", "tool": "twilio_sms_send"},
+  {"text": "twilio sms send: your table is ready", "tool": "twilio_sms_send"},
+  {"text": "fire off a quick text message to the customer's phone", "tool": "twilio_sms_send"},
+
+  {"text": "give the customer a ring about their delivery", "tool": "twilio_call_place"},
+  {"text": "twilio call place to the number on file", "tool": "twilio_call_place"},
+  {"text": "dial the vendor to confirm the shipment", "tool": "twilio_call_place"},
+
+  {"text": "add this new lead to our marketing list", "tool": "hubspot_contact_create"},
+  {"text": "hubspot contact create for the conference sign-up", "tool": "hubspot_contact_create"},
+  {"text": "save this person's info from the demo request", "tool": "hubspot_contact_create"},
+
+  {"text": "move that account to closed-won in the pipeline", "tool": "hubspot_deal_update"},
+  {"text": "hubspot deal update: revenue amount changed to 12k", "tool": "hubspot_deal_update"},
+  {"text": "the pipeline entry needs the new contract value now that they've signed", "tool": "hubspot_deal_update"},
+
+  {"text": "start a new doc for the onboarding guide", "tool": "notion_page_create"},
+  {"text": "notion page create for meeting notes", "tool": "notion_page_create"},
+  {"text": "make a fresh doc to track the project roadmap", "tool": "notion_page_create"},
+
+  {"text": "push the latest frontend build live", "tool": "vercel_deploy"},
+  {"text": "vercel deploy the main branch to production", "tool": "vercel_deploy"},
+  {"text": "get the new site changes out to visitors", "tool": "vercel_deploy"},
+
+  {"text": "change where our domain's traffic routes to", "tool": "cloudflare_dns_update"},
+  {"text": "cloudflare dns update: point root domain at new IP", "tool": "cloudflare_dns_update"},
+  {"text": "fix the record so the site loads on the new host", "tool": "cloudflare_dns_update"},
+
+  {"text": "cut checks for the crew this pay period", "tool": "payroll_run"},
+  {"text": "payroll run for the biweekly cycle", "tool": "payroll_run"},
+  {"text": "process everyone's paycheck for this week", "tool": "payroll_run"},
+
+  {"text": "turn in my receipts from the conference trip", "tool": "expense_report_submit"},
+  {"text": "expense report submit for last month's travel", "tool": "expense_report_submit"},
+  {"text": "file my reimbursement request for the client dinner", "tool": "expense_report_submit"},
+
+  {"text": "log my hours for the week", "tool": "timesheet_submit"},
+  {"text": "timesheet submit for this pay period", "tool": "timesheet_submit"},
+  {"text": "send in how many hours I worked on the project", "tool": "timesheet_submit"},
+
+  {"text": "our quarterly scan hasn't kicked off yet, can you get it going", "tool": "pci_asv_scan_start"},
+  {"text": "pci asv scan start for the checkout subnet", "tool": "pci_asv_scan_start"},
+  {"text": "kick off a new vulnerability sweep on our payment servers", "tool": "pci_asv_scan_start"},
+
+  {"text": "is the scan we're running done yet", "tool": "pci_asv_scan_status"},
+  {"text": "pci asv scan status check", "tool": "pci_asv_scan_status"},
+  {"text": "how far along is the vulnerability sweep on the card network", "tool": "pci_asv_scan_status"},
+
+  {"text": "pull the results from last week's vulnerability scan", "tool": "pci_asv_scan_report"},
+  {"text": "pci asv scan report for Q3", "tool": "pci_asv_scan_report"},
+  {"text": "I need the findings document from our most recent sweep for the auditor", "tool": "pci_asv_scan_report"},
+
+  {"text": "we need to fill out our self-assessment questionnaire for this year", "tool": "pci_saq_generate"},
+  {"text": "pci saq generate for merchant level 2", "tool": "pci_saq_generate"},
+  {"text": "start a fresh compliance questionnaire for the card processor", "tool": "pci_saq_generate"},
+
+  {"text": "send our completed questionnaire off to the acquiring bank", "tool": "pci_saq_submit"},
+  {"text": "pci saq submit to the processor", "tool": "pci_saq_submit"},
+  {"text": "file the self-assessment we finished filling out last week", "tool": "pci_saq_submit"},
+
+  {"text": "has the bank reviewed our questionnaire yet", "tool": "pci_saq_status"},
+  {"text": "pci saq status check", "tool": "pci_saq_status"},
+  {"text": "where does our self-assessment stand with the processor", "tool": "pci_saq_status"},
+
+  {"text": "give me the big picture on where we stand with card-data compliance", "tool": "pci_compliance_status"},
+  {"text": "pci compliance status overview", "tool": "pci_compliance_status"},
+  {"text": "are we currently compliant across the board or are there gaps", "tool": "pci_compliance_status"},
+
+  {"text": "attach these network diagrams to our compliance file", "tool": "pci_evidence_upload"},
+  {"text": "pci evidence upload: firewall config screenshots", "tool": "pci_evidence_upload"},
+  {"text": "the auditor asked for supporting documents, get them into the file", "tool": "pci_evidence_upload"},
+
+  {"text": "book an outside firm to try to break into our systems", "tool": "pci_penetration_test_schedule"},
+  {"text": "pci penetration test schedule for next quarter", "tool": "pci_penetration_test_schedule"},
+  {"text": "line up our annual offensive security engagement", "tool": "pci_penetration_test_schedule"}
+]

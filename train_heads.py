@@ -19,7 +19,14 @@ import os
 import torch
 
 import jev_local_engine
-from decision_heads import DecisionHeads, HEADS_SCHEMA, encode, run_heads_decision
+from decision_heads import (
+    DecisionHeads,
+    HEADS_SCHEMA,
+    TOOL_SCHEMA,
+    encode,
+    run_heads_decision,
+    save_heads,
+)
 from jev_local_engine import SCHEMA, run_jev_decision
 
 CORPUS_LABELS_PATH = os.path.join("data", "corpus_labels.json")
@@ -41,6 +48,16 @@ HAND_LABELLED_TRAIN_PATHS = [
     os.path.join("data", "train_b.json"),
     os.path.join("data", "train_c.json"),
 ]
+
+TOOL_TRAIN_PATHS = [
+    os.path.join("data", "tool_train_a.json"),
+    os.path.join("data", "tool_train_b.json"),
+    os.path.join("data", "tool_train_c.json"),
+]
+
+TOOL_HEAD_PATH = os.path.join("data", "tool_head.pt")
+
+TOOL_HOLDOUT_PATH = os.path.join("data", "tool_holdout.json")
 
 CATEGORY_TOPICS = {
     "billing": ["my invoice", "the subscription charge", "my monthly bill"],
@@ -166,6 +183,46 @@ def load_hand_labelled_training_data(paths=HAND_LABELLED_TRAIN_PATHS):
     return texts, labels
 
 
+def load_tool_training_data(paths=TOOL_TRAIN_PATHS):
+    """Load and combine the hand-authored tool-routing training files.
+
+    Each file is a JSON list of `{"text", "tool"}` records carrying a
+    hand-authored tool label drawn from the catalogue — never labels read
+    from the constrained engine, which cannot label tool routing at all.
+
+    Returns `(texts, labels)` as parallel lists, `labels` holding one
+    `{"tool": choice}` dict per text, ready for `train`.
+    """
+    texts = []
+    labels = []
+    for path in paths:
+        with open(path) as f:
+            items = json.load(f)
+        for item in items:
+            texts.append(item["text"])
+            labels.append({"tool": item["tool"]})
+    return texts, labels
+
+
+def train_tool_head(texts=None, labels=None, epochs=400, lr=0.05, save_path=TOOL_HEAD_PATH):
+    """Train a `DecisionHeads(TOOL_SCHEMA)` on the hand-authored tool
+    training data, encoding the queries once and reusing `train`'s existing
+    AdamW settings (and its encoder-frozen assertion) unchanged.
+
+    `texts`/`labels` default to `load_tool_training_data()`'s output.
+    Saves the trained heads to `save_path` (`data/tool_head.pt` by default)
+    via `save_heads` and returns them.
+    """
+    if texts is None or labels is None:
+        texts, labels = load_tool_training_data()
+
+    heads = DecisionHeads(TOOL_SCHEMA)
+    heads = train(texts, labels, heads=heads, epochs=epochs, lr=lr)
+
+    save_heads(heads, save_path)
+    return heads
+
+
 def train(texts, labels, heads=None, epochs=400, lr=0.05):
     """Train `heads` on hand-labelled examples and the frozen encoder's
     pooled features, via AdamW and cross-entropy.
@@ -285,3 +342,52 @@ def evaluate(heads, holdout_path=HOLDOUT_V2_PATH):
         }
 
     return report
+
+
+def evaluate_tool_head(heads, holdout_path=TOOL_HOLDOUT_PATH):
+    """Score `heads` (a `DecisionHeads(TOOL_SCHEMA)`) against the tool-
+    routing holdout (`data/tool_holdout.json` by default) — authored after
+    the tool training data and disjoint from it.
+
+    recall@5 is the headline: the fraction of holdout queries whose true
+    tool appears anywhere in that query's top-5 shortlist. recall@1 is the
+    plain top-1 accuracy, reported alongside it. `unpredicted_tools` names
+    every catalogue tool the head's top-1 decision never lands on across
+    the whole holdout, so a dead class is named rather than folded into an
+    average; `unpredicted_tool_count` is its length.
+
+    The holdout here is one fixed, disjoint file, not a fold built from a
+    larger corpus, so there is nothing to shuffle before partitioning —
+    but per `tool-evaluation`, any cross-validation or fold split built
+    from tool data elsewhere SHALL shuffle with a seeded generator first,
+    the way the preceding change's stride-based split did not, which
+    aliased with a repeating class cycle and reported a false result.
+    """
+    with open(holdout_path) as f:
+        holdout = json.load(f)
+
+    catalogue = heads.schema["tool"]
+    predicted_top1 = set()
+
+    top5_hits = 0
+    top1_hits = 0
+    for item in holdout:
+        result = run_heads_decision(item["text"], heads, top_k=5)
+        record = result["decisions"]["tool"]
+        predicted_top1.add(record["decision"])
+
+        if item["tool"] == record["decision"]:
+            top1_hits += 1
+        top5_choices = {entry["choice"] for entry in record["top_k"]}
+        if item["tool"] in top5_choices:
+            top5_hits += 1
+
+    total = len(holdout)
+    unpredicted_tools = sorted(set(catalogue) - predicted_top1)
+
+    return {
+        "recall_at_5": top5_hits / total,
+        "recall_at_1": top1_hits / total,
+        "unpredicted_tool_count": len(unpredicted_tools),
+        "unpredicted_tools": unpredicted_tools,
+    }

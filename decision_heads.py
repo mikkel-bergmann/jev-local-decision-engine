@@ -3,6 +3,8 @@ trained on frozen-encoder features so every field resolves from a single
 shared forward pass instead of one prompt per field.
 """
 
+import json
+import os
 import time
 
 import torch
@@ -10,6 +12,8 @@ import torch
 import jev_local_engine
 
 HIDDEN_SIZE = 1536
+
+TOOLS_PATH = os.path.join("data", "tools.json")
 
 # The heads' own schema: category and sentiment copied unchanged from the
 # constrained engine's SCHEMA, but urgency collapsed to two classes. Four-way
@@ -25,6 +29,24 @@ HEADS_SCHEMA = {
     "urgency": ["not_urgent", "urgent"],
     "sentiment": list(jev_local_engine.SCHEMA["sentiment"]),
 }
+
+
+def load_tool_catalogue(path=TOOLS_PATH):
+    """Return the ordered tool names from `data/tools.json`.
+
+    The catalogue is a flat JSON list of unique, namespaced tool names (see
+    `tool-catalogue`). Order is preserved from the file so a schema built
+    from it is deterministic.
+    """
+    with open(path) as f:
+        return json.load(f)
+
+
+# The tool-routing head's own schema: one field, "tool", whose choices are
+# the full catalogue. Built the same way HEADS_SCHEMA is — a plain
+# {field: choices} mapping — so the existing DecisionHeads class accepts it
+# unchanged; it already builds one Linear(HIDDEN_SIZE, n) per field.
+TOOL_SCHEMA = {"tool": load_tool_catalogue()}
 
 
 class DecisionHeads(torch.nn.Module):
@@ -95,9 +117,15 @@ def encode(texts, batch_size=16):
     return torch.cat(all_features, dim=0)
 
 
-def run_heads_decision(text, heads):
+def run_heads_decision(text, heads, top_k=5):
     """Score `text` against `heads` and return the same shape `run_jev_decision`
     returns, so the two paths are directly comparable.
+
+    Each field's record additionally carries a `top_k` list of the
+    `top_k` highest-probability `{"choice", "probability"}` entries, ordered
+    by descending probability, whose first entry equals that field's
+    `decision`. `decision` and `probabilities` keep their previous meaning
+    and values — `top_k` is purely additive.
 
     `latency_ms` times the encode plus the head forward only — the shared
     single pass this path exists to measure — excluding model load. Uses
@@ -123,7 +151,15 @@ def run_heads_decision(text, heads):
             choice: float(prob) for choice, prob in zip(choices, probabilities[0])
         }
         best_choice = max(probs_by_choice, key=probs_by_choice.get)
-        decisions[field] = {"decision": best_choice, "probabilities": probs_by_choice}
+        ranked = sorted(probs_by_choice.items(), key=lambda kv: kv[1], reverse=True)
+        top_k_list = [
+            {"choice": choice, "probability": prob} for choice, prob in ranked[:top_k]
+        ]
+        decisions[field] = {
+            "decision": best_choice,
+            "probabilities": probs_by_choice,
+            "top_k": top_k_list,
+        }
 
     return {"decisions": decisions, "latency_ms": latency_ms}
 
