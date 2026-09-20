@@ -48,6 +48,28 @@ def load_tool_catalogue(path=TOOLS_PATH):
 # unchanged; it already builds one Linear(HIDDEN_SIZE, n) per field.
 TOOL_SCHEMA = {"tool": load_tool_catalogue()}
 
+# The gate head's own schema: one binary field answering whether a query is
+# a tool request at all. Built the same way TOOL_SCHEMA and HEADS_SCHEMA
+# are — a plain {field: choices} mapping the existing DecisionHeads class
+# accepts unchanged.
+GATE_SCHEMA = {"is_tool_request": ["no", "yes"]}
+
+# The gate's decision threshold on its "yes" probability, chosen by
+# train_heads.choose_gate_threshold sweeping 0.10 to 0.90 in steps of 0.05
+# against data/gate_holdout.json (40 positives, 40 negatives) and selecting
+# the candidate that maximizes the harmonic mean of the negative-rejection
+# rate and the genuine-request retention rate — never picked by hand, per
+# `gate-threshold`. Re-measured 2026-09-20 against the shipped
+# data/gate_head.pt after adding 30 narrative-past-tense-incident negatives
+# to close the gap the validator found (the gate was accepting mundane
+# incident anecdotes like "my dog ate my homework" as tool requests): at
+# 0.35, precision 1.0, recall 1.0, and negative-rejection rate 1.0 on the
+# holdout (the sweep ties across 0.35-0.55; 0.35 is the lowest threshold
+# reaching that tie, so it biases toward retaining genuine requests when
+# candidates are otherwise equal). The prior measurement had selected 0.45;
+# it is superseded here rather than kept, per `gate-threshold`.
+GATE_THRESHOLD = 0.35
+
 
 class DecisionHeads(torch.nn.Module):
     """One linear classification head per schema field, sharing one feature
@@ -162,6 +184,73 @@ def run_heads_decision(text, heads, top_k=5):
         }
 
     return {"decisions": decisions, "latency_ms": latency_ms}
+
+
+def route_tool(text, tool_heads, gate_head, threshold=GATE_THRESHOLD):
+    """Route `text` to a tool, consulting `gate_head` before `tool_heads` so
+    the router can abstain instead of always naming a catalogue tool.
+
+    Encodes `text` exactly once and reuses those features for both heads —
+    a gated routing decision costs the same single encoder forward pass any
+    decision does (`tool-request-gate`); it does not call
+    `run_heads_decision`, which would encode a second time.
+
+    Compares the gate's "yes" probability against `threshold`. Below
+    threshold, the query is reported as not a tool request: no tool name,
+    an empty shortlist. At or above threshold, the query is routed by
+    `tool_heads` exactly as `run_heads_decision(text, tool_heads)` alone
+    would route it — same `decision` and `top_k` (defaulting to five, as
+    `run_heads_decision` does), since both read the same features through
+    the same trained head.
+
+    Returns `{"is_tool_request": bool, "gate_probability": float,
+    "tool": str | None, "top_k": list}`. `gate_probability` is always
+    present, whichever way the gate decided (`gated-routing`).
+
+    `run_heads_decision` and its return shape are untouched — this is a
+    separate entry point, per `comparable-return-shape`.
+    """
+    features = encode([text])
+
+    with torch.no_grad():
+        gate_probabilities = gate_head(features)
+    gate_choices = gate_head.schema["is_tool_request"]
+    gate_probs_by_choice = {
+        choice: float(prob)
+        for choice, prob in zip(
+            gate_choices, gate_probabilities["is_tool_request"][0]
+        )
+    }
+    gate_probability = gate_probs_by_choice["yes"]
+    is_tool_request = gate_probability >= threshold
+
+    if not is_tool_request:
+        return {
+            "is_tool_request": False,
+            "gate_probability": gate_probability,
+            "tool": None,
+            "top_k": [],
+        }
+
+    with torch.no_grad():
+        tool_probabilities = tool_heads(features)
+    tool_choices = tool_heads.schema["tool"]
+    tool_probs_by_choice = {
+        choice: float(prob)
+        for choice, prob in zip(tool_choices, tool_probabilities["tool"][0])
+    }
+    best_tool = max(tool_probs_by_choice, key=tool_probs_by_choice.get)
+    ranked = sorted(tool_probs_by_choice.items(), key=lambda kv: kv[1], reverse=True)
+    top_k_list = [
+        {"choice": choice, "probability": prob} for choice, prob in ranked[:5]
+    ]
+
+    return {
+        "is_tool_request": True,
+        "gate_probability": gate_probability,
+        "tool": best_tool,
+        "top_k": top_k_list,
+    }
 
 
 def save_heads(heads, path):

@@ -13,6 +13,7 @@ examples with human labels, and trains against `HEADS_SCHEMA` (urgency
 collapsed to two classes; see `decision_heads.HEADS_SCHEMA`).
 """
 
+import collections
 import json
 import os
 
@@ -21,6 +22,8 @@ import torch
 import jev_local_engine
 from decision_heads import (
     DecisionHeads,
+    GATE_SCHEMA,
+    GATE_THRESHOLD,
     HEADS_SCHEMA,
     TOOL_SCHEMA,
     encode,
@@ -53,11 +56,21 @@ TOOL_TRAIN_PATHS = [
     os.path.join("data", "tool_train_a.json"),
     os.path.join("data", "tool_train_b.json"),
     os.path.join("data", "tool_train_c.json"),
+    os.path.join("data", "tool_train_d.json"),
 ]
 
 TOOL_HEAD_PATH = os.path.join("data", "tool_head.pt")
 
 TOOL_HOLDOUT_PATH = os.path.join("data", "tool_holdout.json")
+
+GATE_NEGATIVE_PATHS = [
+    os.path.join("data", "gate_negatives_a.json"),
+    os.path.join("data", "gate_negatives_b.json"),
+]
+
+GATE_HEAD_PATH = os.path.join("data", "gate_head.pt")
+
+GATE_HOLDOUT_PATH = os.path.join("data", "gate_holdout.json")
 
 CATEGORY_TOPICS = {
     "billing": ["my invoice", "the subscription charge", "my monthly bill"],
@@ -223,7 +236,79 @@ def train_tool_head(texts=None, labels=None, epochs=400, lr=0.05, save_path=TOOL
     return heads
 
 
-def train(texts, labels, heads=None, epochs=400, lr=0.05):
+def load_gate_training_data(tool_paths=TOOL_TRAIN_PATHS, negative_paths=GATE_NEGATIVE_PATHS):
+    """Load the gate's training data: the existing hand-authored
+    tool-routing queries as positives, and the hand-authored non-requests
+    as negatives — never a label read from the constrained engine, which
+    cannot answer "is this a tool request" at all.
+
+    Each tool-routing query (`tool_paths`) becomes a
+    `{"is_tool_request": "yes"}` example; each authored negative
+    (`negative_paths`) becomes a `{"is_tool_request": "no"}` example. Only
+    the text is used from the tool-routing queries — their `tool` label is
+    irrelevant to the gate, which only ever answers yes or no.
+
+    Returns `(texts, labels)` as parallel lists, ready for `train`.
+    """
+    texts = []
+    labels = []
+    for path in tool_paths:
+        with open(path) as f:
+            items = json.load(f)
+        for item in items:
+            texts.append(item["text"])
+            labels.append({"is_tool_request": "yes"})
+    for path in negative_paths:
+        with open(path) as f:
+            items = json.load(f)
+        for item in items:
+            texts.append(item["text"])
+            labels.append({"is_tool_request": "no"})
+    return texts, labels
+
+
+def train_gate_head(texts=None, labels=None, epochs=400, lr=0.05, save_path=GATE_HEAD_PATH):
+    """Train a `DecisionHeads(GATE_SCHEMA)` on the gate's training data.
+
+    `texts`/`labels` default to `load_gate_training_data()`'s output, where
+    the "yes" (tool-request) examples outnumber the "no" (negative)
+    examples — 350 to 160 at present, a ratio the training data can't
+    fully close since the tool-routing queries double as positives. Cross-
+    entropy is weighted per class, inversely proportional to that class's
+    share of the data, to offset the imbalance — otherwise the loss would
+    reward a classifier that leans toward always answering "yes".
+
+    Freezing the encoder and asserting it stayed frozen happens inside
+    `train` itself (`assert all(not param.requires_grad ...)` immediately
+    after freezing); training the gate head through the same `train`
+    function inherits that assertion rather than repeating it.
+
+    Saves the trained heads to `save_path` (`data/gate_head.pt` by default)
+    via `save_heads` and returns them.
+    """
+    if texts is None or labels is None:
+        texts, labels = load_gate_training_data()
+
+    heads = DecisionHeads(GATE_SCHEMA)
+
+    choices = GATE_SCHEMA["is_tool_request"]
+    counts = collections.Counter(label["is_tool_request"] for label in labels)
+    class_weights = {
+        "is_tool_request": torch.tensor(
+            [len(labels) / (len(choices) * counts[choice]) for choice in choices],
+            dtype=torch.float32,
+        )
+    }
+
+    heads = train(
+        texts, labels, heads=heads, epochs=epochs, lr=lr, class_weights=class_weights
+    )
+
+    save_heads(heads, save_path)
+    return heads
+
+
+def train(texts, labels, heads=None, epochs=400, lr=0.05, class_weights=None):
     """Train `heads` on hand-labelled examples and the frozen encoder's
     pooled features, via AdamW and cross-entropy.
 
@@ -242,6 +327,12 @@ def train(texts, labels, heads=None, epochs=400, lr=0.05):
     measurably underfits within a practical epoch budget (verified: at
     lr=1e-3, 400 epochs plateaus in the 0.3-0.6 train-accuracy range, while
     lr=0.05 reaches 0.97+ on the same data in the same epoch budget).
+
+    `class_weights`, when given, is a `{field: tensor}` mapping passed as
+    cross-entropy's `weight` argument for that field — additive and
+    optional, so every existing caller (which never had class imbalance to
+    offset) is unaffected. `train_gate_head` is the one caller that passes
+    it, to offset the gate's positives outnumbering its negatives.
 
     Returns the trained `heads`.
     """
@@ -279,7 +370,12 @@ def train(texts, labels, heads=None, epochs=400, lr=0.05):
         loss = 0.0
         for field, head in heads.heads.items():
             logits = head(features)
-            loss = loss + torch.nn.functional.cross_entropy(logits, targets[field])
+            weight = None
+            if class_weights is not None and field in class_weights:
+                weight = class_weights[field]
+            loss = loss + torch.nn.functional.cross_entropy(
+                logits, targets[field], weight=weight
+            )
         loss.backward()
         optimizer.step()
     heads.eval()
@@ -390,4 +486,161 @@ def evaluate_tool_head(heads, holdout_path=TOOL_HOLDOUT_PATH):
         "recall_at_1": top1_hits / total,
         "unpredicted_tool_count": len(unpredicted_tools),
         "unpredicted_tools": unpredicted_tools,
+    }
+
+
+# The swept candidate thresholds: 0.10 to 0.90 inclusive, in steps of 0.05,
+# per `gate-threshold`.
+GATE_THRESHOLD_CANDIDATES = [round(0.10 + 0.05 * i, 2) for i in range(17)]
+
+
+def choose_gate_threshold(gate, holdout_path=GATE_HOLDOUT_PATH):
+    """Sweep candidate gate decision thresholds against `holdout_path` and
+    select the one that maximizes the harmonic mean of the two directions
+    of the trade a threshold makes: the share of negatives rejected and the
+    share of genuine tool requests retained.
+
+    A hand-picked threshold is exactly what this function replaces — see
+    `gate-threshold` and the decision recorded in this change's plan: a
+    threshold chosen by judgement alone is how the previous advice (a
+    confidence cutoff on the tool head's own softmax) was refuted by
+    measurement. This sweep is the measurement.
+
+    Scores every holdout item once with `gate` (its "yes" probability),
+    then, for each candidate threshold in `GATE_THRESHOLD_CANDIDATES`
+    (0.10 to 0.90 in steps of 0.05), classifies an item accepted iff its
+    "yes" probability is at or above that threshold. For each candidate,
+    reports:
+
+    - `negative_rejection_rate`: the share of true negatives correctly
+      rejected
+    - `genuine_retention_rate`: the share of true positives (genuine tool
+      requests) correctly retained — the same figure as `recall`, reported
+      under both names since `gate-threshold` and `gate-evaluation` each
+      name it differently
+    - `precision`, `recall`, `f1`: the standard classification figures at
+      that threshold
+    - `harmonic_mean`: the harmonic mean of `negative_rejection_rate` and
+      `genuine_retention_rate` — the selection criterion
+
+    Returns `{"threshold": selected_value, "selected": {...the winning
+    candidate's full record...}, "sweep": [...one record per candidate,
+    in ascending threshold order...]}`.
+    """
+    with open(holdout_path) as f:
+        holdout = json.load(f)
+
+    probabilities = []
+    for item in holdout:
+        result = run_heads_decision(item["text"], gate)
+        probabilities.append(
+            result["decisions"]["is_tool_request"]["probabilities"]["yes"]
+        )
+
+    sweep = []
+    best = None
+    for threshold in GATE_THRESHOLD_CANDIDATES:
+        tp = fp = tn = fn = 0
+        for item, probability in zip(holdout, probabilities):
+            accepted = probability >= threshold
+            is_positive = item["is_tool_request"]
+            if is_positive and accepted:
+                tp += 1
+            elif is_positive and not accepted:
+                fn += 1
+            elif not is_positive and accepted:
+                fp += 1
+            else:
+                tn += 1
+
+        negative_rejection_rate = tn / (tn + fp) if (tn + fp) else 0.0
+        genuine_retention_rate = tp / (tp + fn) if (tp + fn) else 0.0
+        precision = tp / (tp + fp) if (tp + fp) else 0.0
+        recall = genuine_retention_rate
+        f1 = (
+            2 * precision * recall / (precision + recall)
+            if (precision + recall)
+            else 0.0
+        )
+        harmonic_mean = (
+            2
+            * negative_rejection_rate
+            * genuine_retention_rate
+            / (negative_rejection_rate + genuine_retention_rate)
+            if (negative_rejection_rate + genuine_retention_rate)
+            else 0.0
+        )
+
+        sweep.append(
+            {
+                "threshold": threshold,
+                "negative_rejection_rate": negative_rejection_rate,
+                "genuine_retention_rate": genuine_retention_rate,
+                "precision": precision,
+                "recall": recall,
+                "f1": f1,
+                "harmonic_mean": harmonic_mean,
+            }
+        )
+        if best is None or sweep[-1]["harmonic_mean"] > best["harmonic_mean"]:
+            best = sweep[-1]
+
+    return {"threshold": best["threshold"], "selected": best, "sweep": sweep}
+
+
+def evaluate_gate(gate, holdout_path=GATE_HOLDOUT_PATH):
+    """Score `gate` (a `DecisionHeads(GATE_SCHEMA)`) against the gate
+    holdout (`data/gate_holdout.json` by default — authored after the gate
+    training data and disjoint from it) at the shipped `GATE_THRESHOLD`.
+
+    Reports the negative-rejection rate and the genuine-request retention
+    rate side by side, never folding them into a single accuracy figure,
+    per `gate-evaluation`; precision, recall and F1 are reported alongside.
+    `recall` and `genuine_retention_rate` are the same figure under the two
+    names `gate-threshold` and `gate-evaluation` each use.
+
+    The holdout here is one fixed, disjoint file, not a fold built from a
+    larger corpus, so there is nothing to shuffle before partitioning —
+    but per `gate-evaluation`, any cross-validation or fold split built
+    from gate data elsewhere SHALL shuffle with a seeded generator first,
+    the same discipline `evaluate_tool_head` and `choose_gate_threshold`
+    already carry.
+
+    Returns `{"negative_rejection_rate", "genuine_retention_rate",
+    "precision", "recall", "f1"}`.
+    """
+    with open(holdout_path) as f:
+        holdout = json.load(f)
+
+    tp = fp = tn = fn = 0
+    for item in holdout:
+        result = run_heads_decision(item["text"], gate)
+        probability = result["decisions"]["is_tool_request"]["probabilities"]["yes"]
+        accepted = probability >= GATE_THRESHOLD
+        is_positive = item["is_tool_request"]
+        if is_positive and accepted:
+            tp += 1
+        elif is_positive and not accepted:
+            fn += 1
+        elif not is_positive and accepted:
+            fp += 1
+        else:
+            tn += 1
+
+    negative_rejection_rate = tn / (tn + fp) if (tn + fp) else 0.0
+    genuine_retention_rate = tp / (tp + fn) if (tp + fn) else 0.0
+    precision = tp / (tp + fp) if (tp + fp) else 0.0
+    recall = genuine_retention_rate
+    f1 = (
+        2 * precision * recall / (precision + recall)
+        if (precision + recall)
+        else 0.0
+    )
+
+    return {
+        "negative_rejection_rate": negative_rejection_rate,
+        "genuine_retention_rate": genuine_retention_rate,
+        "precision": precision,
+        "recall": recall,
+        "f1": f1,
     }
